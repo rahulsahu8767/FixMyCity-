@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CivicWatch - Community Leaderboard</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <a href="index.html" class="logo">
+                    <div class="logo-icon">📍</div>
+                    <span class="logo-text">CivicWatch</span>
+                </a>
+                
+                <nav class="nav">
+                    <a href="index.html" class="nav-link">
+                        <span>📍</span>
+                        <span class="nav-link-text">Report Issue</span>
+                    </a>
+                    <a href="leaderboard.html" class="nav-link active">
+                        <span>🏆</span>
+                        <span class="nav-link-text">Leaderboard</span>
+                    </a>
+                    <a href="social.html" class="nav-link">
+                        <span>👥</span>
+                        <span class="nav-link-text">Community</span>
+                    </a>
+                    <a href="#" class="nav-link">
+                        <span>🔔</span>
+                        <span class="nav-link-text">Updates</span>
+                    </a>
+                </nav>
+
+                <div class="user-actions">
+                    <a href="login.html" class="nav-link">
+                        <span>👤</span>
+                        <span class="nav-link-text">Login</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container" style="max-width: 80rem;">
+            <!-- Page Title -->
+            <div class="text-center mb-8">
+                <h1 class="gradient-text mb-4">Community Leaderboard</h1>
+                <p class="text-xl text-muted">
+                    Celebrating our top civic contributors who make communities better
+                </p>
+            </div>
+
+            <!-- Stats Overview -->
+            <div class="grid grid-md-4 gap-4 mb-8">
+                <div class="card text-center">
+                    <div class="card-content">
+                        <div class="flex items-center justify-center">
+                            <span style="font-size: 2rem; color: var(--civic-blue); margin-right: 0.75rem;">👥</span>
+                            <div>
+                                <p style="font-size: 2rem; font-weight: 700; margin: 0;">1,247</p>
+                                <p class="text-sm text-muted" style="margin: 0;">Active Citizens</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card text-center">
+                    <div class="card-content">
+                        <div class="flex items-center justify-center">
+                            <span style="font-size: 2rem; color: var(--civic-green); margin-right: 0.75rem;">🎯</span>
+                            <div>
+                                <p style="font-size: 2rem; font-weight: 700; margin: 0;">3,891</p>
+                                <p class="text-sm text-muted" style="margin: 0;">Issues Reported</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card text-center">
+                    <div class="card-content">
+                        <div class="flex items-center justify-center">
+                            <span style="font-size: 2rem; color: var(--civic-orange); margin-right: 0.75rem;">🏆</span>
+                            <div>
+                                <p style="font-size: 2rem; font-weight: 700; margin: 0;">2,654</p>
+                                <p class="text-sm text-muted" style="margin: 0;">Issues Resolved</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card text-center">
+                    <div class="card-content">
+                        <div class="flex items-center justify-center">
+                            <span style="font-size: 2rem; color: var(--civic-purple); margin-right: 0.75rem;">📈</span>
+                            <div>
+                                <p style="font-size: 2rem; font-weight: 700; margin: 0;">68%</p>
+                                <p class="text-sm text-muted" style="margin: 0;">Resolution Rate</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Timeframe Filter -->
+            <div class="text-center mb-8">
+                <div class="tabs" style="max-width: 24rem; margin: 0 auto;">
+                    <button class="tab active timeframe-btn" onclick="switchTimeframe('weekly')">Weekly</button>
+                    <button class="tab timeframe-btn" onclick="switchTimeframe('monthly')">Monthly</button>
+                    <button class="tab timeframe-btn" onclick="switchTimeframe('all-time')">All Time</button>
+                </div>
+            </div>
+
+            <!-- Top 3 Podium -->
+            <div class="mb-8">
+                <h2 class="text-center mb-6" style="font-size: 2rem; font-weight: 700;">Top Contributors</h2>
+                <div class="podium">
+                    <!-- 2nd Place -->
+                    <div class="podium-item podium-second">
+                        <div class="podium-icon">🥈</div>
+                        <div class="avatar">RK</div>
+                        <h3 style="font-weight: 700; font-size: 1.125rem;">Rajesh Kumar</h3>
+                        <p style="font-size: 2rem; font-weight: 700; color: #9ca3af; margin: 0.5rem 0;">2,156 pts</p>
+                        <div class="badge badge-primary">Community Hero</div>
+                    </div>
+
+                    <!-- 1st Place -->
+                    <div class="podium-item podium-first">
+                        <div class="podium-icon">🏆</div>
+                        <div class="avatar">PS</div>
+                        <h3 style="font-weight: 700; font-size: 1.25rem;">Priya Sharma</h3>
+                        <p style="font-size: 3rem; font-weight: 700; color: #d97706; margin: 0.5rem 0;">2,847 pts</p>
+                        <div class="badge badge-warning">👑 Civic Champion</div>
+                    </div>
+
+                    <!-- 3rd Place -->
+                    <div class="podium-item podium-third">
+                        <div class="podium-icon">🥉</div>
+                        <div class="avatar">AD</div>
+                        <h3 style="font-weight: 700; font-size: 1.125rem;">Anita Desai</h3>
+                        <p style="font-size: 2rem; font-weight: 700; color: #d97706; margin: 0.5rem 0;">1,934 pts</p>
+                        <div class="badge badge-success">Civic Warrior</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Complete Leaderboard -->
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Complete Rankings</h3>
+                    <p class="card-description">
+                        Full leaderboard showing all community contributors
+                    </p>
+                </div>
+                <div class="card-content">
+                    <!-- Leaderboard Items -->
+                    <div class="leaderboard-item top-3">
+                        <div class="leaderboard-left">
+                            <div class="rank-display">🏆</div>
+                            <div class="leaderboard-avatar">PS</div>
+                            <div>
+                                <h4 style="font-weight: 600; margin-bottom: 0.25rem;">Priya Sharma</h4>
+                                <div class="flex items-center gap-2">
+                                    <div class="badge badge-warning text-sm">Civic Champion</div>
+                                    <span class="text-sm text-muted">15 day streak</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="leaderboard-stats">
+                            <div class="text-center">
+                                <p style="font-size: 2rem; font-weight: 700; color: var(--civic-blue); margin: 0;">2847</p>
+                                <p class="text-sm text-muted" style="margin: 0;">points</p>
+                            </div>
+                            <div class="stat-item show-md">
+                                <div class="stat-value">47</div>
+                                <div class="stat-label">Reports</div>
+                            </div>
+                            <div class="stat-item show-md">
+                                <div class="stat-value text-success">38</div>
+                                <div class="stat-label">Resolved</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="leaderboard-item top-3">
+                        <div class="leaderboard-left">
+                            <div class="rank-display">🥈</div>
+                            <div class="leaderboard-avatar">RK</div>
+                            <div>
+                                <h4 style="font-weight: 600; margin-bottom: 0.25rem;">Rajesh Kumar</h4>
+                                <div class="flex items-center gap-2">
+                                    <div class="badge badge-primary text-sm">Community Hero</div>
+                                    <span class="text-sm text-muted">8 day streak</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="leaderboard-stats">
+                            <div class="text-center">
+                                <p style="font-size: 2rem; font-weight: 700; color: var(--civic-blue); margin: 0;">2156</p>
+                                <p class="text-sm text-muted" style="margin: 0;">points</p>
+                            </div>
+                            <div class="stat-item show-md">
+                                <div class="stat-value">35</div>
+                                <div class="stat-label">Reports</div>
+                            </div>
+                            <div class="stat-item show-md">
+                                <div class="stat-value text-success">29</div>
+                                <div class="stat-label">Resolved</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="leaderboard-item top-3">
+                        <div class="leaderboard-left">
+                            <div class="rank-display">🥉</div>
+                            <div class="leaderboard-avatar">AD</div>
+                            <div>
+                                <h4 style="font-weight: 600; margin-bottom: 0.25rem;">Anita Desai</h4>
+                                <div class="flex items-center gap-2">
+                                    <div class="badge badge-success text-sm">Civic Warrior</div>
+                                    <span class="text-sm text-muted">12 day streak</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="leaderboard-stats">
+                            <div class="text-center">
+                                <p style="font-size: 2rem; font-weight: 700; color: var(--civic-blue); margin: 0;">1934</p>
+                                <p class="text-sm text-muted" style="margin: 0;">points</p>
+                            </div>
+                            <div class="stat-item show-md">
+                                <div class="stat-value">32</div>
+                                <div class="stat-label">Reports</div>
+                            </div>
+                            <div class="stat-item show-md">
+                                <div class="stat-value text-success">25</div>
+                                <div class="stat-label">Resolved</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="leaderboard-item">
+                        <div class="leaderboard-left">
+                            <div class="rank-display">#4</div>
+                            <div class="leaderboard-avatar">VS</div>
+                            <div>
+                                <h4 style="font-weight: 600; margin-bottom: 0.25rem;">Vikram Singh</h4>
+                                <div class="flex items-center gap-2">
+                                    <div class="badge badge-warning text-sm">Civic Guardian</div>
+                                    <span class="text-sm text-muted">5 day streak</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="leaderboard-stats">
+                            <div class="text-center">
+                                <p style="font-size: 2rem; font-weight: 700; color: var(--civic-blue); margin: 0;">1567</p>
+                                <p class="text-sm text-muted" style="margin: 0;">points</p>
+                            </div>
+                            <div class="stat-item show-md">
+                                <div class="stat-value">28</div>
+                                <div class="stat-label">Reports</div>
+                            </div>
+                            <div class="stat-item show-md">
+                                <div class="stat-value text-success">22</div>
+                                <div class="stat-label">Resolved</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="leaderboard-item">
+                        <div class="leaderboard-left">
+                            <div class="rank-display">#5</div>
+                            <div class="leaderboard-avatar">MP</div>
+                            <div>
+                                <h4 style="font-weight: 600; margin-bottom: 0.25rem;">Meera Patel</h4>
+                                <div class="flex items-center gap-2">
+                                    <div class="badge badge-primary text-sm">Active Citizen</div>
+                                    <span class="text-sm text-muted">7 day streak</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="leaderboard-stats">
+                            <div class="text-center">
+                                <p style="font-size: 2rem; font-weight: 700; color: var(--civic-blue); margin: 0;">1342</p>
+                                <p class="text-sm text-muted" style="margin: 0;">points</p>
+                            </div>
+                            <div class="stat-item show-md">
+                                <div class="stat-value">24</div>
+                                <div class="stat-label">Reports</div>
+                            </div>
+                            <div class="stat-item show-md">
+                                <div class="stat-value text-success">19</div>
+                                <div class="stat-label">Resolved</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Point System Explanation -->
+            <div class="card mt-8">
+                <div class="card-header">
+                    <h3 class="card-title flex items-center gap-2">
+                        <span>⭐</span>
+                        How Points Work
+                    </h3>
+                </div>
+                <div class="card-content">
+                    <div class="grid grid-md-4 gap-4">
+                        <div class="text-center p-4 border rounded">
+                            <p style="font-size: 2rem; font-weight: 700; color: var(--civic-blue); margin-bottom: 0.5rem;">+50</p>
+                            <p class="text-sm" style="margin: 0;">Report Submitted</p>
+                        </div>
+                        <div class="text-center p-4 border rounded">
+                            <p style="font-size: 2rem; font-weight: 700; color: var(--civic-green); margin-bottom: 0.5rem;">+100</p>
+                            <p class="text-sm" style="margin: 0;">Issue Resolved</p>
+                        </div>
+                        <div class="text-center p-4 border rounded">
+                            <p style="font-size: 2rem; font-weight: 700; color: var(--civic-orange); margin-bottom: 0.5rem;">+25</p>
+                            <p class="text-sm" style="margin: 0;">Quality Photos</p>
+                        </div>
+                        <div class="text-center p-4 border rounded">
+                            <p style="font-size: 2rem; font-weight: 700; color: var(--civic-purple); margin-bottom: 0.5rem;">+10</p>
+                            <p class="text-sm" style="margin: 0;">Daily Streak</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <div class="footer-brand-icon">📍</div>
+                    <p class="text-sm">
+                        Built for responsible citizens, by the community.
+                    </p>
+                </div>
+                <p class="text-sm text-muted">
+                    © 2024 CivicWatch. Making communities better, one report at a time.
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="scripts.js"></script>
+</body>
+</html>
