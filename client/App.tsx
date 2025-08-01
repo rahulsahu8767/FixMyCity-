@@ -1,59 +1,81 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { Layout } from "./components/Layout";
-import { ReportIssue } from "./pages/ReportIssue";
-import { Leaderboard } from "./pages/Leaderboard";
-import { Social } from "./pages/Social";
-import { Login } from "./pages/Login";
-import { Notifications } from "./pages/Notifications";
-import { NotFound } from "./pages/NotFound";
+import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
+
+function SimpleLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="min-h-screen bg-background">
+      <header className="border-b p-4">
+        <nav className="flex space-x-4">
+          <Link to="/" className="text-civic-blue hover:underline">Report Issue</Link>
+          <Link to="/leaderboard" className="text-civic-blue hover:underline">Leaderboard</Link>
+          <Link to="/social" className="text-civic-blue hover:underline">Social</Link>
+          <Link to="/login" className="text-civic-blue hover:underline">Login</Link>
+        </nav>
+      </header>
+      <main className="p-4">
+        {children}
+      </main>
+    </div>
+  );
+}
+
+function HomePage() {
+  return (
+    <div className="text-center py-8">
+      <h1 className="text-4xl font-bold bg-gradient-to-r from-civic-blue to-civic-green bg-clip-text text-transparent mb-4">
+        CivicWatch
+      </h1>
+      <p className="text-xl text-muted-foreground mb-8">
+        Report a Civic Issue
+      </p>
+      <div className="max-w-md mx-auto p-6 border rounded-lg bg-card">
+        <p className="text-muted-foreground">
+          Issue reporting form will be loaded here. This is a test to ensure the routing and basic components work.
+        </p>
+      </div>
+    </div>
+  );
+}
+
+function TestPage({ title }: { title: string }) {
+  return (
+    <div className="text-center py-8">
+      <h1 className="text-3xl font-bold text-civic-blue mb-4">{title}</h1>
+      <p className="text-muted-foreground">This page is under construction.</p>
+    </div>
+  );
+}
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* Login page without layout */}
-        <Route path="/login" element={<Login />} />
-        
-        {/* All other pages with layout */}
         <Route 
           path="/" 
           element={
-            <Layout>
-              <ReportIssue />
-            </Layout>
+            <SimpleLayout>
+              <HomePage />
+            </SimpleLayout>
           } 
         />
         <Route 
           path="/leaderboard" 
           element={
-            <Layout>
-              <Leaderboard />
-            </Layout>
+            <SimpleLayout>
+              <TestPage title="Leaderboard" />
+            </SimpleLayout>
           } 
         />
         <Route 
           path="/social" 
           element={
-            <Layout>
-              <Social />
-            </Layout>
+            <SimpleLayout>
+              <TestPage title="Community Feed" />
+            </SimpleLayout>
           } 
         />
         <Route 
-          path="/notifications" 
-          element={
-            <Layout>
-              <Notifications />
-            </Layout>
-          } 
-        />
-        <Route 
-          path="*" 
-          element={
-            <Layout>
-              <NotFound />
-            </Layout>
-          } 
+          path="/login" 
+          element={<TestPage title="Login" />} 
         />
       </Routes>
     </BrowserRouter>
