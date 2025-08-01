@@ -1,31 +1,26 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { Layout } from "./components/Layout";
-import { ReportIssue } from "./pages/ReportIssue";
-import { Leaderboard } from "./pages/Leaderboard";
-import { Social } from "./pages/Social";
-import { Login } from "./pages/Login";
-import { Notifications } from "./pages/Notifications";
-import { NotFound } from "./pages/NotFound";
+
+function TestHome() {
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-background">
+      <div className="text-center">
+        <h1 className="text-4xl font-bold bg-gradient-to-r from-civic-blue to-civic-green bg-clip-text text-transparent mb-4">
+          CivicWatch
+        </h1>
+        <p className="text-xl text-muted-foreground">
+          Smart Civic Issue Reporting System
+        </p>
+      </div>
+    </div>
+  );
+}
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* Login page without layout */}
-        <Route path="/login" element={<Login />} />
-        
-        {/* All other pages with layout */}
-        <Route path="/*" element={
-          <Layout>
-            <Routes>
-              <Route path="/" element={<ReportIssue />} />
-              <Route path="/leaderboard" element={<Leaderboard />} />
-              <Route path="/social" element={<Social />} />
-              <Route path="/notifications" element={<Notifications />} />
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </Layout>
-        } />
+        <Route path="/" element={<TestHome />} />
+        <Route path="*" element={<TestHome />} />
       </Routes>
     </BrowserRouter>
   );
