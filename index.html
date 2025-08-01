@@ -1,14 +1,235 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Hello world project</title>
-  </head>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CivicWatch - Report a Civic Issue</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <a href="index.html" class="logo">
+                    <div class="logo-icon">📍</div>
+                    <span class="logo-text">CivicWatch</span>
+                </a>
+                
+                <nav class="nav">
+                    <a href="index.html" class="nav-link active">
+                        <span>📍</span>
+                        <span class="nav-link-text">Report Issue</span>
+                    </a>
+                    <a href="leaderboard.html" class="nav-link">
+                        <span>🏆</span>
+                        <span class="nav-link-text">Leaderboard</span>
+                    </a>
+                    <a href="social.html" class="nav-link">
+                        <span>👥</span>
+                        <span class="nav-link-text">Community</span>
+                    </a>
+                    <a href="#" class="nav-link">
+                        <span>🔔</span>
+                        <span class="nav-link-text">Updates</span>
+                    </a>
+                </nav>
 
-  <body>
-    <div id="root"></div>
+                <div class="user-actions">
+                    <a href="login.html" class="nav-link">
+                        <span>👤</span>
+                        <span class="nav-link-text">Login</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
 
-    <script type="module" src="/client/App.tsx"></script>
-  </body>
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+            <!-- Page Title -->
+            <div class="text-center mb-8">
+                <h1 class="gradient-text mb-4">Report a Civic Issue</h1>
+                <p class="text-xl text-muted">
+                    Help make your community better by reporting issues that need attention
+                </p>
+            </div>
+
+            <!-- Issue Report Form -->
+            <div style="max-width: 64rem; margin: 0 auto;">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title flex items-center gap-2">
+                            <span>🚨</span>
+                            Issue Details
+                        </h3>
+                        <p class="card-description">
+                            Provide detailed information about the civic issue you want to report
+                        </p>
+                    </div>
+                    <div class="card-content">
+                        <form id="reportForm">
+                            <!-- Title and Category -->
+                            <div class="grid grid-md-2 gap-4 mb-6">
+                                <div class="form-group">
+                                    <label for="title" class="form-label">
+                                        Issue Title <span class="form-required">*</span>
+                                    </label>
+                                    <input 
+                                        type="text" 
+                                        id="title" 
+                                        name="title"
+                                        class="form-input" 
+                                        placeholder="Brief title for the issue"
+                                        required
+                                    >
+                                </div>
+                                <div class="form-group">
+                                    <label for="category" class="form-label">
+                                        Category <span class="form-required">*</span>
+                                    </label>
+                                    <select id="category" name="category" class="form-select" required>
+                                        <option value="">Select issue category</option>
+                                        <option value="Road & Infrastructure">Road & Infrastructure</option>
+                                        <option value="Waste Management">Waste Management</option>
+                                        <option value="Water Supply">Water Supply</option>
+                                        <option value="Street Lighting">Street Lighting</option>
+                                        <option value="Public Safety">Public Safety</option>
+                                        <option value="Parks & Recreation">Parks & Recreation</option>
+                                        <option value="Traffic Issues">Traffic Issues</option>
+                                        <option value="Noise Pollution">Noise Pollution</option>
+                                        <option value="Building Violations">Building Violations</option>
+                                        <option value="Other">Other</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- Location and DIGIPIN -->
+                            <div class="grid grid-md-2 gap-4 mb-6">
+                                <div class="form-group">
+                                    <label for="location" class="form-label">Location</label>
+                                    <input 
+                                        type="text" 
+                                        id="location" 
+                                        name="location"
+                                        class="form-input" 
+                                        placeholder="Street address or landmark"
+                                    >
+                                </div>
+                                <div class="form-group">
+                                    <label for="digiPin" class="form-label">
+                                        DIGIPIN <span class="form-required">*</span>
+                                    </label>
+                                    <input 
+                                        type="text" 
+                                        id="digiPin" 
+                                        name="digiPin"
+                                        class="form-input" 
+                                        style="border-color: rgba(59, 130, 246, 0.5);"
+                                        placeholder="Enter your DIGIPIN"
+                                        required
+                                    >
+                                    <p class="form-help">
+                                        DIGIPIN is mandatory for verification
+                                    </p>
+                                </div>
+                            </div>
+
+                            <!-- Image Upload -->
+                            <div class="form-group mb-6">
+                                <label class="form-label">Upload Images (Max 3)</label>
+                                <div id="uploadArea" class="upload-area">
+                                    <div class="upload-icon">📷</div>
+                                    <p class="text-muted mb-4">
+                                        Upload photos of the issue to help authorities understand the problem better
+                                    </p>
+                                    <button type="button" class="btn btn-outline" id="uploadBtn">
+                                        <span>📤</span>
+                                        Choose Images
+                                    </button>
+                                    <input 
+                                        type="file" 
+                                        id="imageInput" 
+                                        name="images"
+                                        accept="image/*" 
+                                        multiple 
+                                        style="display: none;"
+                                    >
+                                </div>
+                                
+                                <!-- Image Previews -->
+                                <div id="imagePreview" class="grid grid-md-3 gap-4 mt-4"></div>
+                            </div>
+
+                            <!-- Description -->
+                            <div class="form-group mb-6">
+                                <div class="flex items-center justify-between mb-2">
+                                    <label for="description" class="form-label">
+                                        Description <span class="form-required">*</span>
+                                    </label>
+                                    <button 
+                                        type="button" 
+                                        id="aiGenerate"
+                                        class="btn btn-sm btn-outline"
+                                        style="color: var(--civic-purple); border-color: var(--civic-purple);"
+                                    >
+                                        <span>✨</span>
+                                        AI Generate
+                                    </button>
+                                </div>
+                                <textarea 
+                                    id="description" 
+                                    name="description"
+                                    class="form-textarea" 
+                                    rows="6"
+                                    placeholder="Describe the issue in detail..."
+                                    required
+                                ></textarea>
+                            </div>
+
+                            <!-- Important Notice -->
+                            <div class="alert alert-info mb-6">
+                                <div class="flex items-center gap-2">
+                                    <span>📍</span>
+                                    <strong>Important:</strong>
+                                </div>
+                                <p class="mt-2">
+                                    DIGIPIN is mandatory for all submissions. This helps us verify the authenticity of reports and prevent spam.
+                                </p>
+                            </div>
+
+                            <!-- Submit Button -->
+                            <button type="submit" class="btn btn-primary btn-full btn-lg">
+                                Submit Issue Report
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <div class="footer-brand-icon">📍</div>
+                    <p class="text-sm">
+                        Built for responsible citizens, by the community.
+                    </p>
+                </div>
+                <p class="text-sm text-muted">
+                    © 2024 CivicWatch. Making communities better, one report at a time.
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="scripts.js"></script>
+</body>
 </html>
