@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CivicWatch - Login</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Login Container -->
+    <div class="login-container">
+        <div class="login-card">
+            <!-- Brand Section -->
+            <div class="login-brand">
+                <div class="login-icon">📍</div>
+                <h1 class="gradient-text">CivicWatch</h1>
+                <p class="text-muted">
+                    Join the community making cities better
+                </p>
+            </div>
+
+            <!-- Login Card -->
+            <div class="card">
+                <div class="card-header text-center">
+                    <h2 class="card-title">Welcome Back</h2>
+                    <p class="card-description">
+                        Choose your login type to continue
+                    </p>
+                </div>
+                
+                <div class="card-content">
+                    <!-- Tab Selector -->
+                    <div class="tabs">
+                        <button class="tab active" data-tab="userTab">
+                            <span>👤</span>
+                            <span>Citizen</span>
+                        </button>
+                        <button class="tab" data-tab="adminTab">
+                            <span>🛡️</span>
+                            <span>Admin</span>
+                        </button>
+                    </div>
+
+                    <!-- User Login Tab -->
+                    <div id="userTab" class="tab-content active">
+                        <form id="userLoginForm">
+                            <div class="form-group">
+                                <label for="userEmail" class="form-label">Email</label>
+                                <input 
+                                    type="email" 
+                                    id="userEmail" 
+                                    name="email"
+                                    class="form-input" 
+                                    placeholder="your@email.com"
+                                    required
+                                >
+                            </div>
+                            <div class="form-group">
+                                <label for="userPassword" class="form-label">Password</label>
+                                <input 
+                                    type="password" 
+                                    id="userPassword" 
+                                    name="password"
+                                    class="form-input" 
+                                    placeholder="Enter your password"
+                                    required
+                                >
+                            </div>
+                            <button type="submit" class="btn btn-secondary btn-full">
+                                Sign In as Citizen
+                            </button>
+                        </form>
+                        
+                        <div class="text-center mt-4">
+                            <p class="text-sm text-muted">
+                                Don't have an account? 
+                                <a href="#" class="text-primary" style="text-decoration: none;">
+                                    Sign up
+                                </a>
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Admin Login Tab -->
+                    <div id="adminTab" class="tab-content">
+                        <form id="adminLoginForm">
+                            <div class="form-group">
+                                <label for="adminEmail" class="form-label">Admin Email</label>
+                                <input 
+                                    type="email" 
+                                    id="adminEmail" 
+                                    name="email"
+                                    class="form-input" 
+                                    placeholder="admin@civic.gov"
+                                    required
+                                >
+                            </div>
+                            <div class="form-group">
+                                <label for="adminPassword" class="form-label">Password</label>
+                                <input 
+                                    type="password" 
+                                    id="adminPassword" 
+                                    name="password"
+                                    class="form-input" 
+                                    placeholder="Enter admin password"
+                                    required
+                                >
+                            </div>
+                            <div class="form-group">
+                                <label for="adminCode" class="form-label">Admin Access Code</label>
+                                <input 
+                                    type="text" 
+                                    id="adminCode" 
+                                    name="adminCode"
+                                    class="form-input" 
+                                    placeholder="Enter admin access code"
+                                    required
+                                >
+                            </div>
+                            <button type="submit" class="btn btn-success btn-full">
+                                Sign In as Admin
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Navigation -->
+            <div class="text-center mt-6">
+                <p class="text-sm text-muted mb-4">
+                    Want to explore without logging in?
+                </p>
+                <div class="flex justify-center gap-4">
+                    <a href="index.html" class="btn btn-ghost btn-sm">
+                        <span>📍</span>
+                        <span>Report Issue</span>
+                    </a>
+                    <a href="leaderboard.html" class="btn btn-ghost btn-sm">
+                        <span>🏆</span>
+                        <span>Leaderboard</span>
+                    </a>
+                    <a href="social.html" class="btn btn-ghost btn-sm">
+                        <span>👥</span>
+                        <span>Community</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="scripts.js"></script>
+</body>
+</html>
