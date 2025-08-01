@@ -15,17 +15,46 @@ function App() {
         <Route path="/login" element={<Login />} />
         
         {/* All other pages with layout */}
-        <Route path="/*" element={
-          <Layout>
-            <Routes>
-              <Route path="/" element={<ReportIssue />} />
-              <Route path="/leaderboard" element={<Leaderboard />} />
-              <Route path="/social" element={<Social />} />
-              <Route path="/notifications" element={<Notifications />} />
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </Layout>
-        } />
+        <Route 
+          path="/" 
+          element={
+            <Layout>
+              <ReportIssue />
+            </Layout>
+          } 
+        />
+        <Route 
+          path="/leaderboard" 
+          element={
+            <Layout>
+              <Leaderboard />
+            </Layout>
+          } 
+        />
+        <Route 
+          path="/social" 
+          element={
+            <Layout>
+              <Social />
+            </Layout>
+          } 
+        />
+        <Route 
+          path="/notifications" 
+          element={
+            <Layout>
+              <Notifications />
+            </Layout>
+          } 
+        />
+        <Route 
+          path="*" 
+          element={
+            <Layout>
+              <NotFound />
+            </Layout>
+          } 
+        />
       </Routes>
     </BrowserRouter>
   );
