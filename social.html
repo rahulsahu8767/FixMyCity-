@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CivicWatch - Community Feed</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <a href="index.html" class="logo">
+                    <div class="logo-icon">📍</div>
+                    <span class="logo-text">CivicWatch</span>
+                </a>
+                
+                <nav class="nav">
+                    <a href="index.html" class="nav-link">
+                        <span>📍</span>
+                        <span class="nav-link-text">Report Issue</span>
+                    </a>
+                    <a href="leaderboard.html" class="nav-link">
+                        <span>🏆</span>
+                        <span class="nav-link-text">Leaderboard</span>
+                    </a>
+                    <a href="social.html" class="nav-link active">
+                        <span>👥</span>
+                        <span class="nav-link-text">Community</span>
+                    </a>
+                    <a href="#" class="nav-link">
+                        <span>🔔</span>
+                        <span class="nav-link-text">Updates</span>
+                    </a>
+                </nav>
+
+                <div class="user-actions">
+                    <a href="login.html" class="nav-link">
+                        <span>👤</span>
+                        <span class="nav-link-text">Login</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container" style="max-width: 64rem;">
+            <!-- Page Title -->
+            <div class="text-center mb-8">
+                <h1 class="gradient-text mb-4">Community Feed</h1>
+                <p class="text-xl text-muted">
+                    See the impact of civic reporting in your community
+                </p>
+            </div>
+
+            <!-- Filter Tabs -->
+            <div class="text-center mb-8">
+                <div class="tabs" style="max-width: 24rem; margin: 0 auto;">
+                    <button class="tab active filter-btn" onclick="filterReports('all')">All Reports</button>
+                    <button class="tab filter-btn" onclick="filterReports('in-progress')">In Progress</button>
+                    <button class="tab filter-btn" onclick="filterReports('resolved')">Resolved</button>
+                </div>
+            </div>
+
+            <!-- Feed Items -->
+            <div class="feed-container">
+                <!-- Report 1 - Resolved -->
+                <div class="feed-item" data-status="resolved">
+                    <div class="feed-header">
+                        <div class="feed-user">
+                            <div class="feed-avatar">PS</div>
+                            <div>
+                                <h4 style="font-weight: 600; margin-bottom: 0.25rem;">Priya Sharma</h4>
+                                <div class="feed-meta">
+                                    <span>📅 Jan 15</span>
+                                    <span>📍 Main Street & Park Avenue</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="status-badge status-resolved">
+                            <span>✅</span>
+                            <span>RESOLVED</span>
+                        </div>
+                    </div>
+                    
+                    <div class="feed-content">
+                        <h3 style="font-weight: 600; font-size: 1.125rem; margin-bottom: 0.5rem;">
+                            Pothole on Main Street causing traffic issues
+                        </h3>
+                        <p class="text-muted mb-4">
+                            Large pothole near the intersection of Main Street and Park Avenue. Cars are swerving to avoid it, creating potential safety hazards.
+                        </p>
+                        <div class="badge badge-outline text-sm mb-4">Road & Infrastructure</div>
+                        
+                        <!-- Before/After Images -->
+                        <div class="feed-images">
+                            <div class="image-container">
+                                <div class="image-label text-destructive">Before</div>
+                                <div class="image-placeholder" style="background-color: var(--muted);">
+                                    <span style="font-size: 4rem;">🕳️</span>
+                                </div>
+                            </div>
+                            <div class="image-container">
+                                <div class="image-label text-success">After</div>
+                                <div class="image-placeholder" style="background-color: rgba(16, 185, 129, 0.1);">
+                                    <span style="font-size: 4rem;">✅</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Resolution Note -->
+                        <div class="resolution-note">
+                            <div class="flex items-center gap-2 mb-2">
+                                <span style="color: var(--civic-green);">✅ Resolved</span>
+                                <span class="text-sm text-muted">on Jan 18 by Municipal Corporation</span>
+                            </div>
+                            <p class="text-sm" style="margin: 0;">
+                                Road surface repaired and resurfaced. Thank you for reporting!
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="feed-actions">
+                        <div class="action-buttons">
+                            <button class="action-btn like-btn" data-report-id="CR-001234">
+                                <span class="like-icon">🤍</span>
+                                <span class="like-count">24</span>
+                            </button>
+                            <button class="action-btn">
+                                <span>💬</span>
+                                <span>8</span>
+                            </button>
+                            <button class="action-btn">
+                                <span>📤</span>
+                                <span>Share</span>
+                            </button>
+                        </div>
+                        <div class="text-sm text-muted">
+                            Report ID: CR-001234
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Report 2 - In Progress -->
+                <div class="feed-item" data-status="in-progress">
+                    <div class="feed-header">
+                        <div class="feed-user">
+                            <div class="feed-avatar">RK</div>
+                            <div>
+                                <h4 style="font-weight: 600; margin-bottom: 0.25rem;">Rajesh Kumar</h4>
+                                <div class="feed-meta">
+                                    <span>📅 Jan 16</span>
+                                    <span>📍 Residential Complex, Block A</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="status-badge status-progress">
+                            <span>⏳</span>
+                            <span>IN PROGRESS</span>
+                        </div>
+                    </div>
+                    
+                    <div class="feed-content">
+                        <h3 style="font-weight: 600; font-size: 1.125rem; margin-bottom: 0.5rem;">
+                            Overflowing garbage bin in residential area
+                        </h3>
+                        <p class="text-muted mb-4">
+                            The garbage bin near Building A has been overflowing for several days. Waste is scattered around creating unsanitary conditions.
+                        </p>
+                        <div class="badge badge-outline text-sm mb-4">Waste Management</div>
+                        
+                        <!-- Before/After Images -->
+                        <div class="feed-images">
+                            <div class="image-container">
+                                <div class="image-label text-destructive">Before</div>
+                                <div class="image-placeholder" style="background-color: var(--muted);">
+                                    <span style="font-size: 4rem;">🗑️</span>
+                                </div>
+                            </div>
+                            <div class="image-container">
+                                <div class="image-label text-muted">After</div>
+                                <div class="image-placeholder awaiting-placeholder">
+                                    <span>👀</span>
+                                    <p class="text-sm text-muted" style="margin-top: 0.5rem;">
+                                        Awaiting resolution
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="feed-actions">
+                        <div class="action-buttons">
+                            <button class="action-btn like-btn" data-report-id="CR-001235">
+                                <span class="like-icon">🤍</span>
+                                <span class="like-count">15</span>
+                            </button>
+                            <button class="action-btn">
+                                <span>💬</span>
+                                <span>5</span>
+                            </button>
+                            <button class="action-btn">
+                                <span>📤</span>
+                                <span>Share</span>
+                            </button>
+                        </div>
+                        <div class="text-sm text-muted">
+                            Report ID: CR-001235
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Report 3 - Reported -->
+                <div class="feed-item" data-status="reported">
+                    <div class="feed-header">
+                        <div class="feed-user">
+                            <div class="feed-avatar">AD</div>
+                            <div>
+                                <h4 style="font-weight: 600; margin-bottom: 0.25rem;">Anita Desai</h4>
+                                <div class="feed-meta">
+                                    <span>📅 Jan 17</span>
+                                    <span>📍 Elm Street, Pole #47</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="status-badge status-reported">
+                            <span>🔔</span>
+                            <span>REPORTED</span>
+                        </div>
+                    </div>
+                    
+                    <div class="feed-content">
+                        <h3 style="font-weight: 600; font-size: 1.125rem; margin-bottom: 0.5rem;">
+                            Street light not working - safety concern
+                        </h3>
+                        <p class="text-muted mb-4">
+                            Street light pole #47 has been non-functional for over a week. The area becomes very dark at night, posing safety risks for pedestrians.
+                        </p>
+                        <div class="badge badge-outline text-sm mb-4">Street Lighting</div>
+                        
+                        <!-- Before/After Images -->
+                        <div class="feed-images">
+                            <div class="image-container">
+                                <div class="image-label text-destructive">Before</div>
+                                <div class="image-placeholder" style="background-color: var(--muted);">
+                                    <span style="font-size: 4rem;">💡</span>
+                                </div>
+                            </div>
+                            <div class="image-container">
+                                <div class="image-label text-muted">After</div>
+                                <div class="image-placeholder awaiting-placeholder">
+                                    <span>👀</span>
+                                    <p class="text-sm text-muted" style="margin-top: 0.5rem;">
+                                        Awaiting resolution
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="feed-actions">
+                        <div class="action-buttons">
+                            <button class="action-btn like-btn" data-report-id="CR-001236">
+                                <span class="like-icon">🤍</span>
+                                <span class="like-count">18</span>
+                            </button>
+                            <button class="action-btn">
+                                <span>💬</span>
+                                <span>12</span>
+                            </button>
+                            <button class="action-btn">
+                                <span>📤</span>
+                                <span>Share</span>
+                            </button>
+                        </div>
+                        <div class="text-sm text-muted">
+                            Report ID: CR-001236
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Load More -->
+            <div class="text-center mt-8">
+                <button class="btn btn-outline btn-lg">
+                    Load More Reports
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <div class="footer-brand-icon">📍</div>
+                    <p class="text-sm">
+                        Built for responsible citizens, by the community.
+                    </p>
+                </div>
+                <p class="text-sm text-muted">
+                    © 2024 CivicWatch. Making communities better, one report at a time.
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="scripts.js"></script>
+</body>
+</html>
