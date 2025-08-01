@@ -1,44 +1,30 @@
 import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
+import { ReportIssue } from "./pages/ReportIssue";
+import { Login } from "./pages/Login";
 
 function SimpleLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="min-h-screen bg-background">
       <header className="border-b p-4">
-        <nav className="flex space-x-4">
-          <Link to="/" className="text-civic-blue hover:underline">Report Issue</Link>
-          <Link to="/leaderboard" className="text-civic-blue hover:underline">Leaderboard</Link>
-          <Link to="/social" className="text-civic-blue hover:underline">Social</Link>
-          <Link to="/login" className="text-civic-blue hover:underline">Login</Link>
-        </nav>
+        <div className="container mx-auto">
+          <nav className="flex space-x-4">
+            <Link to="/" className="text-civic-blue hover:underline font-medium">Report Issue</Link>
+            <Link to="/leaderboard" className="text-civic-blue hover:underline font-medium">Leaderboard</Link>
+            <Link to="/social" className="text-civic-blue hover:underline font-medium">Social</Link>
+            <Link to="/login" className="text-civic-blue hover:underline font-medium">Login</Link>
+          </nav>
+        </div>
       </header>
-      <main className="p-4">
+      <main>
         {children}
       </main>
     </div>
   );
 }
 
-function HomePage() {
-  return (
-    <div className="text-center py-8">
-      <h1 className="text-4xl font-bold bg-gradient-to-r from-civic-blue to-civic-green bg-clip-text text-transparent mb-4">
-        CivicWatch
-      </h1>
-      <p className="text-xl text-muted-foreground mb-8">
-        Report a Civic Issue
-      </p>
-      <div className="max-w-md mx-auto p-6 border rounded-lg bg-card">
-        <p className="text-muted-foreground">
-          Issue reporting form will be loaded here. This is a test to ensure the routing and basic components work.
-        </p>
-      </div>
-    </div>
-  );
-}
-
 function TestPage({ title }: { title: string }) {
   return (
-    <div className="text-center py-8">
+    <div className="container mx-auto px-4 py-8 text-center">
       <h1 className="text-3xl font-bold text-civic-blue mb-4">{title}</h1>
       <p className="text-muted-foreground">This page is under construction.</p>
     </div>
@@ -53,7 +39,7 @@ function App() {
           path="/" 
           element={
             <SimpleLayout>
-              <HomePage />
+              <ReportIssue />
             </SimpleLayout>
           } 
         />
@@ -75,7 +61,7 @@ function App() {
         />
         <Route 
           path="/login" 
-          element={<TestPage title="Login" />} 
+          element={<Login />} 
         />
       </Routes>
     </BrowserRouter>
