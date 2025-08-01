@@ -1,5 +1,5 @@
 import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
-import { ReportIssue } from "./pages/ReportIssue";
+import { ReportIssueSimple } from "./pages/ReportIssueSimple";
 import { Login } from "./pages/Login";
 
 function SimpleLayout({ children }: { children: React.ReactNode }) {
@@ -39,7 +39,7 @@ function App() {
           path="/" 
           element={
             <SimpleLayout>
-              <ReportIssue />
+              <ReportIssueSimple />
             </SimpleLayout>
           } 
         />
