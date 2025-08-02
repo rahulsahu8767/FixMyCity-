@@ -1,860 +1,1072 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>CivicWatch - Community Leaderboard</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
     <style>
-        /* Reset and Base Styles */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+      /* Reset and Base Styles */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
 
-        :root {
-            --civic-blue: #3b82f6;
-            --civic-blue-hover: #2563eb;
-            --civic-green: #10b981;
-            --civic-green-hover: #059669;
-            --civic-orange: #f59e0b;
-            --civic-purple: #8b5cf6;
-            --background: #ffffff;
-            --foreground: #374151;
-            --muted: #f3f4f6;
-            --muted-foreground: #6b7280;
-            --card: #ffffff;
-            --border: #e5e7eb;
-            --input-border: #d1d5db;
-            --destructive: #ef4444;
-            --success: #10b981;
-            --warning: #f59e0b;
-        }
+      :root {
+        --civic-blue: #3b82f6;
+        --civic-blue-hover: #2563eb;
+        --civic-green: #10b981;
+        --civic-green-hover: #059669;
+        --civic-orange: #f59e0b;
+        --civic-purple: #8b5cf6;
+        --background: #ffffff;
+        --foreground: #374151;
+        --muted: #f3f4f6;
+        --muted-foreground: #6b7280;
+        --card: #ffffff;
+        --border: #e5e7eb;
+        --input-border: #d1d5db;
+        --destructive: #ef4444;
+        --success: #10b981;
+        --warning: #f59e0b;
+      }
 
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
-            background-color: var(--background);
-            color: var(--foreground);
-            line-height: 1.6;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
+      body {
+        font-family:
+          "Inter",
+          -apple-system,
+          BlinkMacSystemFont,
+          "Segoe UI",
+          "Roboto",
+          sans-serif;
+        background-color: var(--background);
+        color: var(--foreground);
+        line-height: 1.6;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
 
-        /* Container */
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 1rem;
-        }
+      /* Container */
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 1rem;
+      }
 
-        /* Header */
-        .header {
-            position: sticky;
-            top: 0;
-            z-index: 50;
-            width: 100%;
-            border-bottom: 1px solid var(--border);
-            background-color: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-        }
+      /* Header */
+      .header {
+        position: sticky;
+        top: 0;
+        z-index: 50;
+        width: 100%;
+        border-bottom: 1px solid var(--border);
+        background-color: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+      }
 
-        .header-content {
-            display: flex;
-            align-items: center;
-            height: 4rem;
-            padding: 0 1rem;
-        }
+      .header-content {
+        display: flex;
+        align-items: center;
+        height: 4rem;
+        padding: 0 1rem;
+      }
 
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            text-decoration: none;
-            margin-right: 2rem;
-        }
+      .logo {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        text-decoration: none;
+        margin-right: 2rem;
+      }
 
-        .logo-icon {
-            width: 2rem;
-            height: 2rem;
-            border-radius: 0.5rem;
-            background: linear-gradient(135deg, var(--civic-blue) 0%, var(--civic-green) 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 1.25rem;
-        }
+      .logo-icon {
+        width: 2rem;
+        height: 2rem;
+        border-radius: 0.5rem;
+        background: linear-gradient(
+          135deg,
+          var(--civic-blue) 0%,
+          var(--civic-green) 100%
+        );
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 1.25rem;
+      }
 
-        .logo-text {
-            font-size: 1.25rem;
-            font-weight: 700;
-            background: linear-gradient(135deg, var(--civic-blue) 0%, var(--civic-green) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
+      .logo-text {
+        font-size: 1.25rem;
+        font-weight: 700;
+        background: linear-gradient(
+          135deg,
+          var(--civic-blue) 0%,
+          var(--civic-green) 100%
+        );
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
 
-        .nav {
-            display: flex;
-            align-items: center;
-            gap: 1.5rem;
-            flex: 1;
-        }
+      .nav {
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+        flex: 1;
+      }
 
-        .nav-link {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            text-decoration: none;
-            color: var(--muted-foreground);
-            font-weight: 500;
-            font-size: 0.875rem;
-            transition: color 0.2s ease;
-            padding: 0.5rem;
-            border-radius: 0.375rem;
-        }
+      .nav-link {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        text-decoration: none;
+        color: var(--muted-foreground);
+        font-weight: 500;
+        font-size: 0.875rem;
+        transition: color 0.2s ease;
+        padding: 0.5rem;
+        border-radius: 0.375rem;
+      }
 
-        .nav-link:hover,
-        .nav-link.active {
-            color: var(--civic-blue);
-            background-color: rgba(59, 130, 246, 0.1);
-        }
+      .nav-link:hover,
+      .nav-link.active {
+        color: var(--civic-blue);
+        background-color: rgba(59, 130, 246, 0.1);
+      }
 
+      .nav-link-text {
+        display: none;
+      }
+
+      @media (min-width: 640px) {
         .nav-link-text {
-            display: none;
+          display: inline;
         }
+      }
 
-        @media (min-width: 640px) {
-            .nav-link-text {
-                display: inline;
-            }
-        }
+      .user-actions {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+      }
 
-        .user-actions {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
+      /* Main Content */
+      .main-content {
+        flex: 1;
+        padding: 2rem 0;
+      }
 
-        /* Main Content */
-        .main-content {
-            flex: 1;
-            padding: 2rem 0;
-        }
+      /* Typography */
+      h1,
+      h2,
+      h3,
+      h4,
+      h5,
+      h6 {
+        font-weight: 700;
+        line-height: 1.3;
+        margin-bottom: 0.5rem;
+      }
 
-        /* Typography */
-        h1, h2, h3, h4, h5, h6 {
-            font-weight: 700;
-            line-height: 1.3;
-            margin-bottom: 0.5rem;
-        }
+      h1 {
+        font-size: 3rem;
+      }
 
-        h1 {
-            font-size: 3rem;
-        }
+      h2 {
+        font-size: 2rem;
+      }
 
-        h2 {
-            font-size: 2rem;
-        }
+      h3 {
+        font-size: 1.5rem;
+      }
 
-        h3 {
-            font-size: 1.5rem;
-        }
+      .gradient-text {
+        background: linear-gradient(
+          135deg,
+          var(--civic-blue) 0%,
+          var(--civic-green) 100%
+        );
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
 
-        .gradient-text {
-            background: linear-gradient(135deg, var(--civic-blue) 0%, var(--civic-green) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
+      .text-center {
+        text-align: center;
+      }
 
-        .text-center {
-            text-align: center;
-        }
+      .text-xl {
+        font-size: 1.25rem;
+      }
 
-        .text-xl {
-            font-size: 1.25rem;
-        }
+      .text-sm {
+        font-size: 0.875rem;
+      }
 
-        .text-sm {
-            font-size: 0.875rem;
-        }
+      .text-muted {
+        color: var(--muted-foreground);
+      }
 
-        .text-muted {
-            color: var(--muted-foreground);
-        }
+      /* Spacing */
+      .mb-4 {
+        margin-bottom: 1rem;
+      }
 
-        /* Spacing */
-        .mb-4 {
-            margin-bottom: 1rem;
-        }
+      .mb-6 {
+        margin-bottom: 1.5rem;
+      }
 
-        .mb-6 {
-            margin-bottom: 1.5rem;
-        }
+      .mb-8 {
+        margin-bottom: 2rem;
+      }
 
-        .mb-8 {
-            margin-bottom: 2rem;
-        }
+      .mt-8 {
+        margin-top: 2rem;
+      }
 
-        .mt-8 {
-            margin-top: 2rem;
-        }
+      /* Cards */
+      .card {
+        background-color: var(--card);
+        border: 2px solid var(--border);
+        border-radius: 0.75rem;
+        box-shadow:
+          0 1px 3px 0 rgba(0, 0, 0, 0.1),
+          0 1px 2px 0 rgba(0, 0, 0, 0.06);
+        overflow: hidden;
+      }
 
-        /* Cards */
-        .card {
-            background-color: var(--card);
-            border: 2px solid var(--border);
-            border-radius: 0.75rem;
-            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
-            overflow: hidden;
-        }
+      .card-header {
+        padding: 1.5rem;
+        border-bottom: 1px solid var(--border);
+      }
 
-        .card-header {
-            padding: 1.5rem;
-            border-bottom: 1px solid var(--border);
-        }
+      .card-title {
+        font-size: 1.125rem;
+        font-weight: 600;
+        margin-bottom: 0.25rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
 
-        .card-title {
-            font-size: 1.125rem;
-            font-weight: 600;
-            margin-bottom: 0.25rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
+      .card-description {
+        color: var(--muted-foreground);
+        font-size: 0.875rem;
+      }
 
-        .card-description {
-            color: var(--muted-foreground);
-            font-size: 0.875rem;
-        }
+      .card-content {
+        padding: 1.5rem;
+      }
 
-        .card-content {
-            padding: 1.5rem;
-        }
+      /* Grid */
+      .grid {
+        display: grid;
+        gap: 1rem;
+      }
 
-        /* Grid */
-        .grid {
-            display: grid;
-            gap: 1rem;
-        }
+      .grid-md-4 {
+        grid-template-columns: 1fr;
+      }
 
+      @media (min-width: 768px) {
         .grid-md-4 {
-            grid-template-columns: 1fr;
+          grid-template-columns: repeat(4, 1fr);
         }
+      }
 
-        @media (min-width: 768px) {
-            .grid-md-4 {
-                grid-template-columns: repeat(4, 1fr);
-            }
-        }
+      /* Flexbox */
+      .flex {
+        display: flex;
+      }
 
-        /* Flexbox */
-        .flex {
-            display: flex;
-        }
+      .items-center {
+        align-items: center;
+      }
 
-        .items-center {
-            align-items: center;
-        }
+      .justify-center {
+        justify-content: center;
+      }
 
-        .justify-center {
-            justify-content: center;
-        }
+      .gap-2 {
+        gap: 0.5rem;
+      }
 
-        .gap-2 {
-            gap: 0.5rem;
-        }
+      /* Badges */
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.25rem 0.75rem;
+        border-radius: 9999px;
+        font-size: 0.75rem;
+        font-weight: 500;
+        white-space: nowrap;
+      }
 
-        /* Badges */
-        .badge {
-            display: inline-flex;
-            align-items: center;
-            padding: 0.25rem 0.75rem;
-            border-radius: 9999px;
-            font-size: 0.75rem;
-            font-weight: 500;
-            white-space: nowrap;
-        }
+      .badge-primary {
+        background-color: var(--civic-blue);
+        color: white;
+      }
 
-        .badge-primary {
-            background-color: var(--civic-blue);
-            color: white;
-        }
+      .badge-success {
+        background-color: var(--civic-green);
+        color: white;
+      }
 
-        .badge-success {
-            background-color: var(--civic-green);
-            color: white;
-        }
+      .badge-warning {
+        background-color: var(--civic-orange);
+        color: white;
+      }
 
-        .badge-warning {
-            background-color: var(--civic-orange);
-            color: white;
-        }
+      /* Leaderboard Specific Styles */
+      .podium {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 1rem;
+        max-width: 64rem;
+        margin: 0 auto;
+      }
 
-        /* Leaderboard Specific Styles */
-        .podium {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: 1rem;
-            max-width: 64rem;
-            margin: 0 auto;
-        }
+      .podium-item {
+        text-align: center;
+        padding: 1.5rem;
+        border-radius: 0.5rem;
+        border: 2px solid var(--border);
+        background-color: var(--card);
+      }
 
-        .podium-item {
-            text-align: center;
-            padding: 1.5rem;
-            border-radius: 0.5rem;
-            border: 2px solid var(--border);
-            background-color: var(--card);
-        }
+      .podium-first {
+        order: 2;
+        border-color: #fbbf24;
+        background: linear-gradient(
+          135deg,
+          rgba(251, 191, 36, 0.1) 0%,
+          rgba(245, 158, 11, 0.1) 100%
+        );
+      }
 
-        .podium-first {
-            order: 2;
-            border-color: #fbbf24;
-            background: linear-gradient(135deg, rgba(251, 191, 36, 0.1) 0%, rgba(245, 158, 11, 0.1) 100%);
-        }
+      .podium-second {
+        order: 1;
+        border-color: #9ca3af;
+      }
 
-        .podium-second {
-            order: 1;
-            border-color: #9ca3af;
-        }
+      .podium-third {
+        order: 3;
+        border-color: #d97706;
+      }
 
-        .podium-third {
-            order: 3;
-            border-color: #d97706;
-        }
+      .podium-icon {
+        font-size: 3rem;
+        margin-bottom: 0.75rem;
+      }
 
-        .podium-icon {
-            font-size: 3rem;
-            margin-bottom: 0.75rem;
-        }
+      .avatar {
+        width: 4rem;
+        height: 4rem;
+        border-radius: 50%;
+        background-color: rgba(59, 130, 246, 0.1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 0.75rem;
+        font-weight: 600;
+        color: var(--civic-blue);
+      }
 
-        .avatar {
-            width: 4rem;
-            height: 4rem;
-            border-radius: 50%;
-            background-color: rgba(59, 130, 246, 0.1);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 0.75rem;
-            font-weight: 600;
-            color: var(--civic-blue);
-        }
+      .podium-first .avatar {
+        width: 5rem;
+        height: 5rem;
+        border: 4px solid #fbbf24;
+      }
 
-        .podium-first .avatar {
-            width: 5rem;
-            height: 5rem;
-            border: 4px solid #fbbf24;
-        }
+      .leaderboard-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 1rem;
+        border-radius: 0.5rem;
+        border: 1px solid var(--border);
+        background-color: var(--card);
+        margin-bottom: 1rem;
+      }
 
-        .leaderboard-item {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 1rem;
-            border-radius: 0.5rem;
-            border: 1px solid var(--border);
-            background-color: var(--card);
-            margin-bottom: 1rem;
-        }
+      .leaderboard-item.top-3 {
+        background: linear-gradient(
+          135deg,
+          rgba(59, 130, 246, 0.05) 0%,
+          rgba(16, 185, 129, 0.05) 100%
+        );
+        border-color: rgba(59, 130, 246, 0.2);
+      }
 
-        .leaderboard-item.top-3 {
-            background: linear-gradient(135deg, rgba(59, 130, 246, 0.05) 0%, rgba(16, 185, 129, 0.05) 100%);
-            border-color: rgba(59, 130, 246, 0.2);
-        }
+      .leaderboard-left {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+      }
 
-        .leaderboard-left {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
+      .rank-display {
+        width: 3rem;
+        text-align: center;
+        font-size: 1.25rem;
+        font-weight: 600;
+      }
 
-        .rank-display {
-            width: 3rem;
-            text-align: center;
-            font-size: 1.25rem;
-            font-weight: 600;
-        }
+      .leaderboard-avatar {
+        width: 3rem;
+        height: 3rem;
+        border-radius: 50%;
+        background-color: rgba(59, 130, 246, 0.1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 600;
+        color: var(--civic-blue);
+      }
 
-        .leaderboard-avatar {
-            width: 3rem;
-            height: 3rem;
-            border-radius: 50%;
-            background-color: rgba(59, 130, 246, 0.1);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 600;
-            color: var(--civic-blue);
-        }
+      .leaderboard-stats {
+        display: flex;
+        align-items: center;
+        gap: 2rem;
+      }
 
-        .leaderboard-stats {
-            display: flex;
-            align-items: center;
-            gap: 2rem;
-        }
+      .stat-item {
+        text-align: center;
+      }
 
-        .stat-item {
-            text-align: center;
-        }
+      .stat-value {
+        font-size: 1.125rem;
+        font-weight: 600;
+        color: var(--civic-blue);
+      }
 
-        .stat-value {
-            font-size: 1.125rem;
-            font-weight: 600;
-            color: var(--civic-blue);
-        }
+      .stat-label {
+        font-size: 0.75rem;
+        color: var(--muted-foreground);
+      }
 
-        .stat-label {
-            font-size: 0.75rem;
-            color: var(--muted-foreground);
-        }
+      .show-md {
+        display: none;
+      }
 
+      @media (min-width: 768px) {
         .show-md {
-            display: none;
+          display: block;
         }
+      }
 
-        @media (min-width: 768px) {
-            .show-md {
-                display: block;
-            }
-        }
+      .text-success {
+        color: var(--civic-green);
+      }
 
-        .text-success {
-            color: var(--civic-green);
-        }
+      /* Tabs */
+      .tabs {
+        display: flex;
+        background-color: var(--muted);
+        border-radius: 0.5rem;
+        padding: 0.25rem;
+        margin-bottom: 1.5rem;
+      }
 
-        /* Tabs */
-        .tabs {
-            display: flex;
-            background-color: var(--muted);
-            border-radius: 0.5rem;
-            padding: 0.25rem;
-            margin-bottom: 1.5rem;
-        }
+      .tab {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        padding: 0.5rem;
+        border: none;
+        background: none;
+        border-radius: 0.375rem;
+        font-size: 0.875rem;
+        font-weight: 500;
+        color: var(--muted-foreground);
+        cursor: pointer;
+        transition: all 0.2s ease;
+      }
 
-        .tab {
-            flex: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-            padding: 0.5rem;
-            border: none;
-            background: none;
-            border-radius: 0.375rem;
-            font-size: 0.875rem;
-            font-weight: 500;
-            color: var(--muted-foreground);
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
+      .tab.active {
+        background-color: var(--background);
+        color: var(--foreground);
+        box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+      }
 
-        .tab.active {
-            background-color: var(--background);
-            color: var(--foreground);
-            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
-        }
+      /* Footer */
+      .footer {
+        border-top: 1px solid var(--border);
+        background-color: var(--muted);
+        padding: 2.5rem 0;
+        margin-top: auto;
+      }
 
-        /* Footer */
-        .footer {
-            border-top: 1px solid var(--border);
-            background-color: var(--muted);
-            padding: 2.5rem 0;
-            margin-top: auto;
-        }
+      .footer-content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1rem;
+        text-align: center;
+      }
 
+      @media (min-width: 640px) {
         .footer-content {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 1rem;
-            text-align: center;
+          flex-direction: row;
+          justify-content: space-between;
         }
+      }
 
-        @media (min-width: 640px) {
-            .footer-content {
-                flex-direction: row;
-                justify-content: space-between;
-            }
-        }
+      .footer-brand {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
 
-        .footer-brand {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
+      .footer-brand-icon {
+        width: 1.5rem;
+        height: 1.5rem;
+        border-radius: 0.25rem;
+        background: linear-gradient(
+          135deg,
+          var(--civic-blue) 0%,
+          var(--civic-green) 100%
+        );
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 1rem;
+      }
 
-        .footer-brand-icon {
-            width: 1.5rem;
-            height: 1.5rem;
-            border-radius: 0.25rem;
-            background: linear-gradient(135deg, var(--civic-blue) 0%, var(--civic-green) 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 1rem;
-        }
+      /* Additional utility classes */
+      .border {
+        border: 1px solid var(--border);
+      }
 
-        /* Additional utility classes */
-        .border {
-            border: 1px solid var(--border);
-        }
+      .rounded {
+        border-radius: 0.375rem;
+      }
 
-        .rounded {
-            border-radius: 0.375rem;
-        }
-
-        .p-4 {
-            padding: 1rem;
-        }
+      .p-4 {
+        padding: 1rem;
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <!-- Header -->
     <header class="header">
-        <div class="container">
-            <div class="header-content">
-                <a href="index.html" class="logo">
-                    <div class="logo-icon">📍</div>
-                    <span class="logo-text">CivicWatch</span>
-                </a>
-                
-                <nav class="nav">
-                    <a href="index.html" class="nav-link">
-                        <span>📍</span>
-                        <span class="nav-link-text">Report Issue</span>
-                    </a>
-                    <a href="leaderboard.html" class="nav-link active">
-                        <span>🏆</span>
-                        <span class="nav-link-text">Leaderboard</span>
-                    </a>
-                    <a href="social.html" class="nav-link">
-                        <span>👥</span>
-                        <span class="nav-link-text">Community</span>
-                    </a>
-                    <a href="#" class="nav-link">
-                        <span>🔔</span>
-                        <span class="nav-link-text">Updates</span>
-                    </a>
-                </nav>
+      <div class="container">
+        <div class="header-content">
+          <a href="index.html" class="logo">
+            <div class="logo-icon">📍</div>
+            <span class="logo-text">CivicWatch</span>
+          </a>
 
-                <div class="user-actions">
-                    <a href="login.html" class="nav-link">
-                        <span>👤</span>
-                        <span class="nav-link-text">Login</span>
-                    </a>
-                </div>
-            </div>
+          <nav class="nav">
+            <a href="index.html" class="nav-link">
+              <span>📍</span>
+              <span class="nav-link-text">Report Issue</span>
+            </a>
+            <a href="leaderboard.html" class="nav-link active">
+              <span>🏆</span>
+              <span class="nav-link-text">Leaderboard</span>
+            </a>
+            <a href="social.html" class="nav-link">
+              <span>👥</span>
+              <span class="nav-link-text">Community</span>
+            </a>
+            <a href="#" class="nav-link">
+              <span>🔔</span>
+              <span class="nav-link-text">Updates</span>
+            </a>
+          </nav>
+
+          <div class="user-actions">
+            <a href="login.html" class="nav-link">
+              <span>👤</span>
+              <span class="nav-link-text">Login</span>
+            </a>
+          </div>
         </div>
+      </div>
     </header>
 
     <!-- Main Content -->
     <main class="main-content">
-        <div class="container" style="max-width: 80rem;">
-            <!-- Page Title -->
-            <div class="text-center mb-8">
-                <h1 class="gradient-text mb-4">Community Leaderboard</h1>
-                <p class="text-xl text-muted">
-                    Celebrating our top civic contributors who make communities better
-                </p>
-            </div>
-
-            <!-- Stats Overview -->
-            <div class="grid grid-md-4 mb-8">
-                <div class="card text-center">
-                    <div class="card-content">
-                        <div class="flex items-center justify-center">
-                            <span style="font-size: 2rem; color: var(--civic-blue); margin-right: 0.75rem;">👥</span>
-                            <div>
-                                <p style="font-size: 2rem; font-weight: 700; margin: 0;">1,247</p>
-                                <p class="text-sm text-muted" style="margin: 0;">Active Citizens</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="card text-center">
-                    <div class="card-content">
-                        <div class="flex items-center justify-center">
-                            <span style="font-size: 2rem; color: var(--civic-green); margin-right: 0.75rem;">🎯</span>
-                            <div>
-                                <p style="font-size: 2rem; font-weight: 700; margin: 0;">3,891</p>
-                                <p class="text-sm text-muted" style="margin: 0;">Issues Reported</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="card text-center">
-                    <div class="card-content">
-                        <div class="flex items-center justify-center">
-                            <span style="font-size: 2rem; color: var(--civic-orange); margin-right: 0.75rem;">🏆</span>
-                            <div>
-                                <p style="font-size: 2rem; font-weight: 700; margin: 0;">2,654</p>
-                                <p class="text-sm text-muted" style="margin: 0;">Issues Resolved</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="card text-center">
-                    <div class="card-content">
-                        <div class="flex items-center justify-center">
-                            <span style="font-size: 2rem; color: var(--civic-purple); margin-right: 0.75rem;">📈</span>
-                            <div>
-                                <p style="font-size: 2rem; font-weight: 700; margin: 0;">68%</p>
-                                <p class="text-sm text-muted" style="margin: 0;">Resolution Rate</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Timeframe Filter -->
-            <div class="text-center mb-8">
-                <div class="tabs" style="max-width: 24rem; margin: 0 auto;">
-                    <button class="tab active">Weekly</button>
-                    <button class="tab">Monthly</button>
-                    <button class="tab">All Time</button>
-                </div>
-            </div>
-
-            <!-- Top 3 Podium -->
-            <div class="mb-8">
-                <h2 class="text-center mb-6">Top Contributors</h2>
-                <div class="podium">
-                    <!-- 2nd Place -->
-                    <div class="podium-item podium-second">
-                        <div class="podium-icon">🥈</div>
-                        <div class="avatar">RK</div>
-                        <h3 style="font-weight: 700; font-size: 1.125rem;">Rajesh Kumar</h3>
-                        <p style="font-size: 2rem; font-weight: 700; color: #9ca3af; margin: 0.5rem 0;">2,156 pts</p>
-                        <div class="badge badge-primary">Community Hero</div>
-                    </div>
-
-                    <!-- 1st Place -->
-                    <div class="podium-item podium-first">
-                        <div class="podium-icon">🏆</div>
-                        <div class="avatar">PS</div>
-                        <h3 style="font-weight: 700; font-size: 1.25rem;">Priya Sharma</h3>
-                        <p style="font-size: 3rem; font-weight: 700; color: #d97706; margin: 0.5rem 0;">2,847 pts</p>
-                        <div class="badge badge-warning">👑 Civic Champion</div>
-                    </div>
-
-                    <!-- 3rd Place -->
-                    <div class="podium-item podium-third">
-                        <div class="podium-icon">🥉</div>
-                        <div class="avatar">AD</div>
-                        <h3 style="font-weight: 700; font-size: 1.125rem;">Anita Desai</h3>
-                        <p style="font-size: 2rem; font-weight: 700; color: #d97706; margin: 0.5rem 0;">1,934 pts</p>
-                        <div class="badge badge-success">Civic Warrior</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Complete Leaderboard -->
-            <div class="card">
-                <div class="card-header">
-                    <h3 class="card-title">Complete Rankings</h3>
-                    <p class="card-description">
-                        Full leaderboard showing all community contributors
-                    </p>
-                </div>
-                <div class="card-content">
-                    <!-- Leaderboard Items -->
-                    <div class="leaderboard-item top-3">
-                        <div class="leaderboard-left">
-                            <div class="rank-display">🏆</div>
-                            <div class="leaderboard-avatar">PS</div>
-                            <div>
-                                <h4 style="font-weight: 600; margin-bottom: 0.25rem;">Priya Sharma</h4>
-                                <div class="flex items-center gap-2">
-                                    <div class="badge badge-warning text-sm">Civic Champion</div>
-                                    <span class="text-sm text-muted">15 day streak</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="leaderboard-stats">
-                            <div class="text-center">
-                                <p style="font-size: 2rem; font-weight: 700; color: var(--civic-blue); margin: 0;">2847</p>
-                                <p class="text-sm text-muted" style="margin: 0;">points</p>
-                            </div>
-                            <div class="stat-item show-md">
-                                <div class="stat-value">47</div>
-                                <div class="stat-label">Reports</div>
-                            </div>
-                            <div class="stat-item show-md">
-                                <div class="stat-value text-success">38</div>
-                                <div class="stat-label">Resolved</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="leaderboard-item top-3">
-                        <div class="leaderboard-left">
-                            <div class="rank-display">🥈</div>
-                            <div class="leaderboard-avatar">RK</div>
-                            <div>
-                                <h4 style="font-weight: 600; margin-bottom: 0.25rem;">Rajesh Kumar</h4>
-                                <div class="flex items-center gap-2">
-                                    <div class="badge badge-primary text-sm">Community Hero</div>
-                                    <span class="text-sm text-muted">8 day streak</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="leaderboard-stats">
-                            <div class="text-center">
-                                <p style="font-size: 2rem; font-weight: 700; color: var(--civic-blue); margin: 0;">2156</p>
-                                <p class="text-sm text-muted" style="margin: 0;">points</p>
-                            </div>
-                            <div class="stat-item show-md">
-                                <div class="stat-value">35</div>
-                                <div class="stat-label">Reports</div>
-                            </div>
-                            <div class="stat-item show-md">
-                                <div class="stat-value text-success">29</div>
-                                <div class="stat-label">Resolved</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="leaderboard-item top-3">
-                        <div class="leaderboard-left">
-                            <div class="rank-display">🥉</div>
-                            <div class="leaderboard-avatar">AD</div>
-                            <div>
-                                <h4 style="font-weight: 600; margin-bottom: 0.25rem;">Anita Desai</h4>
-                                <div class="flex items-center gap-2">
-                                    <div class="badge badge-success text-sm">Civic Warrior</div>
-                                    <span class="text-sm text-muted">12 day streak</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="leaderboard-stats">
-                            <div class="text-center">
-                                <p style="font-size: 2rem; font-weight: 700; color: var(--civic-blue); margin: 0;">1934</p>
-                                <p class="text-sm text-muted" style="margin: 0;">points</p>
-                            </div>
-                            <div class="stat-item show-md">
-                                <div class="stat-value">32</div>
-                                <div class="stat-label">Reports</div>
-                            </div>
-                            <div class="stat-item show-md">
-                                <div class="stat-value text-success">25</div>
-                                <div class="stat-label">Resolved</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="leaderboard-item">
-                        <div class="leaderboard-left">
-                            <div class="rank-display">#4</div>
-                            <div class="leaderboard-avatar">VS</div>
-                            <div>
-                                <h4 style="font-weight: 600; margin-bottom: 0.25rem;">Vikram Singh</h4>
-                                <div class="flex items-center gap-2">
-                                    <div class="badge badge-warning text-sm">Civic Guardian</div>
-                                    <span class="text-sm text-muted">5 day streak</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="leaderboard-stats">
-                            <div class="text-center">
-                                <p style="font-size: 2rem; font-weight: 700; color: var(--civic-blue); margin: 0;">1567</p>
-                                <p class="text-sm text-muted" style="margin: 0;">points</p>
-                            </div>
-                            <div class="stat-item show-md">
-                                <div class="stat-value">28</div>
-                                <div class="stat-label">Reports</div>
-                            </div>
-                            <div class="stat-item show-md">
-                                <div class="stat-value text-success">22</div>
-                                <div class="stat-label">Resolved</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="leaderboard-item">
-                        <div class="leaderboard-left">
-                            <div class="rank-display">#5</div>
-                            <div class="leaderboard-avatar">MP</div>
-                            <div>
-                                <h4 style="font-weight: 600; margin-bottom: 0.25rem;">Meera Patel</h4>
-                                <div class="flex items-center gap-2">
-                                    <div class="badge badge-primary text-sm">Active Citizen</div>
-                                    <span class="text-sm text-muted">7 day streak</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="leaderboard-stats">
-                            <div class="text-center">
-                                <p style="font-size: 2rem; font-weight: 700; color: var(--civic-blue); margin: 0;">1342</p>
-                                <p class="text-sm text-muted" style="margin: 0;">points</p>
-                            </div>
-                            <div class="stat-item show-md">
-                                <div class="stat-value">24</div>
-                                <div class="stat-label">Reports</div>
-                            </div>
-                            <div class="stat-item show-md">
-                                <div class="stat-value text-success">19</div>
-                                <div class="stat-label">Resolved</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Point System Explanation -->
-            <div class="card mt-8">
-                <div class="card-header">
-                    <h3 class="card-title">
-                        <span>⭐</span>
-                        How Points Work
-                    </h3>
-                </div>
-                <div class="card-content">
-                    <div class="grid grid-md-4">
-                        <div class="text-center p-4 border rounded">
-                            <p style="font-size: 2rem; font-weight: 700; color: var(--civic-blue); margin-bottom: 0.5rem;">+50</p>
-                            <p class="text-sm" style="margin: 0;">Report Submitted</p>
-                        </div>
-                        <div class="text-center p-4 border rounded">
-                            <p style="font-size: 2rem; font-weight: 700; color: var(--civic-green); margin-bottom: 0.5rem;">+100</p>
-                            <p class="text-sm" style="margin: 0;">Issue Resolved</p>
-                        </div>
-                        <div class="text-center p-4 border rounded">
-                            <p style="font-size: 2rem; font-weight: 700; color: var(--civic-orange); margin-bottom: 0.5rem;">+25</p>
-                            <p class="text-sm" style="margin: 0;">Quality Photos</p>
-                        </div>
-                        <div class="text-center p-4 border rounded">
-                            <p style="font-size: 2rem; font-weight: 700; color: var(--civic-purple); margin-bottom: 0.5rem;">+10</p>
-                            <p class="text-sm" style="margin: 0;">Daily Streak</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
+      <div class="container" style="max-width: 80rem">
+        <!-- Page Title -->
+        <div class="text-center mb-8">
+          <h1 class="gradient-text mb-4">Community Leaderboard</h1>
+          <p class="text-xl text-muted">
+            Celebrating our top civic contributors who make communities better
+          </p>
         </div>
+
+        <!-- Stats Overview -->
+        <div class="grid grid-md-4 mb-8">
+          <div class="card text-center">
+            <div class="card-content">
+              <div class="flex items-center justify-center">
+                <span
+                  style="
+                    font-size: 2rem;
+                    color: var(--civic-blue);
+                    margin-right: 0.75rem;
+                  "
+                  >👥</span
+                >
+                <div>
+                  <p style="font-size: 2rem; font-weight: 700; margin: 0">
+                    1,247
+                  </p>
+                  <p class="text-sm text-muted" style="margin: 0">
+                    Active Citizens
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="card text-center">
+            <div class="card-content">
+              <div class="flex items-center justify-center">
+                <span
+                  style="
+                    font-size: 2rem;
+                    color: var(--civic-green);
+                    margin-right: 0.75rem;
+                  "
+                  >🎯</span
+                >
+                <div>
+                  <p style="font-size: 2rem; font-weight: 700; margin: 0">
+                    3,891
+                  </p>
+                  <p class="text-sm text-muted" style="margin: 0">
+                    Issues Reported
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="card text-center">
+            <div class="card-content">
+              <div class="flex items-center justify-center">
+                <span
+                  style="
+                    font-size: 2rem;
+                    color: var(--civic-orange);
+                    margin-right: 0.75rem;
+                  "
+                  >🏆</span
+                >
+                <div>
+                  <p style="font-size: 2rem; font-weight: 700; margin: 0">
+                    2,654
+                  </p>
+                  <p class="text-sm text-muted" style="margin: 0">
+                    Issues Resolved
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="card text-center">
+            <div class="card-content">
+              <div class="flex items-center justify-center">
+                <span
+                  style="
+                    font-size: 2rem;
+                    color: var(--civic-purple);
+                    margin-right: 0.75rem;
+                  "
+                  >📈</span
+                >
+                <div>
+                  <p style="font-size: 2rem; font-weight: 700; margin: 0">
+                    68%
+                  </p>
+                  <p class="text-sm text-muted" style="margin: 0">
+                    Resolution Rate
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Timeframe Filter -->
+        <div class="text-center mb-8">
+          <div class="tabs" style="max-width: 24rem; margin: 0 auto">
+            <button class="tab active">Weekly</button>
+            <button class="tab">Monthly</button>
+            <button class="tab">All Time</button>
+          </div>
+        </div>
+
+        <!-- Top 3 Podium -->
+        <div class="mb-8">
+          <h2 class="text-center mb-6">Top Contributors</h2>
+          <div class="podium">
+            <!-- 2nd Place -->
+            <div class="podium-item podium-second">
+              <div class="podium-icon">🥈</div>
+              <div class="avatar">RK</div>
+              <h3 style="font-weight: 700; font-size: 1.125rem">
+                Rajesh Kumar
+              </h3>
+              <p
+                style="
+                  font-size: 2rem;
+                  font-weight: 700;
+                  color: #9ca3af;
+                  margin: 0.5rem 0;
+                "
+              >
+                2,156 pts
+              </p>
+              <div class="badge badge-primary">Community Hero</div>
+            </div>
+
+            <!-- 1st Place -->
+            <div class="podium-item podium-first">
+              <div class="podium-icon">🏆</div>
+              <div class="avatar">PS</div>
+              <h3 style="font-weight: 700; font-size: 1.25rem">Priya Sharma</h3>
+              <p
+                style="
+                  font-size: 3rem;
+                  font-weight: 700;
+                  color: #d97706;
+                  margin: 0.5rem 0;
+                "
+              >
+                2,847 pts
+              </p>
+              <div class="badge badge-warning">👑 Civic Champion</div>
+            </div>
+
+            <!-- 3rd Place -->
+            <div class="podium-item podium-third">
+              <div class="podium-icon">🥉</div>
+              <div class="avatar">AD</div>
+              <h3 style="font-weight: 700; font-size: 1.125rem">Anita Desai</h3>
+              <p
+                style="
+                  font-size: 2rem;
+                  font-weight: 700;
+                  color: #d97706;
+                  margin: 0.5rem 0;
+                "
+              >
+                1,934 pts
+              </p>
+              <div class="badge badge-success">Civic Warrior</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Complete Leaderboard -->
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">Complete Rankings</h3>
+            <p class="card-description">
+              Full leaderboard showing all community contributors
+            </p>
+          </div>
+          <div class="card-content">
+            <!-- Leaderboard Items -->
+            <div class="leaderboard-item top-3">
+              <div class="leaderboard-left">
+                <div class="rank-display">🏆</div>
+                <div class="leaderboard-avatar">PS</div>
+                <div>
+                  <h4 style="font-weight: 600; margin-bottom: 0.25rem">
+                    Priya Sharma
+                  </h4>
+                  <div class="flex items-center gap-2">
+                    <div class="badge badge-warning text-sm">
+                      Civic Champion
+                    </div>
+                    <span class="text-sm text-muted">15 day streak</span>
+                  </div>
+                </div>
+              </div>
+              <div class="leaderboard-stats">
+                <div class="text-center">
+                  <p
+                    style="
+                      font-size: 2rem;
+                      font-weight: 700;
+                      color: var(--civic-blue);
+                      margin: 0;
+                    "
+                  >
+                    2847
+                  </p>
+                  <p class="text-sm text-muted" style="margin: 0">points</p>
+                </div>
+                <div class="stat-item show-md">
+                  <div class="stat-value">47</div>
+                  <div class="stat-label">Reports</div>
+                </div>
+                <div class="stat-item show-md">
+                  <div class="stat-value text-success">38</div>
+                  <div class="stat-label">Resolved</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="leaderboard-item top-3">
+              <div class="leaderboard-left">
+                <div class="rank-display">🥈</div>
+                <div class="leaderboard-avatar">RK</div>
+                <div>
+                  <h4 style="font-weight: 600; margin-bottom: 0.25rem">
+                    Rajesh Kumar
+                  </h4>
+                  <div class="flex items-center gap-2">
+                    <div class="badge badge-primary text-sm">
+                      Community Hero
+                    </div>
+                    <span class="text-sm text-muted">8 day streak</span>
+                  </div>
+                </div>
+              </div>
+              <div class="leaderboard-stats">
+                <div class="text-center">
+                  <p
+                    style="
+                      font-size: 2rem;
+                      font-weight: 700;
+                      color: var(--civic-blue);
+                      margin: 0;
+                    "
+                  >
+                    2156
+                  </p>
+                  <p class="text-sm text-muted" style="margin: 0">points</p>
+                </div>
+                <div class="stat-item show-md">
+                  <div class="stat-value">35</div>
+                  <div class="stat-label">Reports</div>
+                </div>
+                <div class="stat-item show-md">
+                  <div class="stat-value text-success">29</div>
+                  <div class="stat-label">Resolved</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="leaderboard-item top-3">
+              <div class="leaderboard-left">
+                <div class="rank-display">🥉</div>
+                <div class="leaderboard-avatar">AD</div>
+                <div>
+                  <h4 style="font-weight: 600; margin-bottom: 0.25rem">
+                    Anita Desai
+                  </h4>
+                  <div class="flex items-center gap-2">
+                    <div class="badge badge-success text-sm">Civic Warrior</div>
+                    <span class="text-sm text-muted">12 day streak</span>
+                  </div>
+                </div>
+              </div>
+              <div class="leaderboard-stats">
+                <div class="text-center">
+                  <p
+                    style="
+                      font-size: 2rem;
+                      font-weight: 700;
+                      color: var(--civic-blue);
+                      margin: 0;
+                    "
+                  >
+                    1934
+                  </p>
+                  <p class="text-sm text-muted" style="margin: 0">points</p>
+                </div>
+                <div class="stat-item show-md">
+                  <div class="stat-value">32</div>
+                  <div class="stat-label">Reports</div>
+                </div>
+                <div class="stat-item show-md">
+                  <div class="stat-value text-success">25</div>
+                  <div class="stat-label">Resolved</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="leaderboard-item">
+              <div class="leaderboard-left">
+                <div class="rank-display">#4</div>
+                <div class="leaderboard-avatar">VS</div>
+                <div>
+                  <h4 style="font-weight: 600; margin-bottom: 0.25rem">
+                    Vikram Singh
+                  </h4>
+                  <div class="flex items-center gap-2">
+                    <div class="badge badge-warning text-sm">
+                      Civic Guardian
+                    </div>
+                    <span class="text-sm text-muted">5 day streak</span>
+                  </div>
+                </div>
+              </div>
+              <div class="leaderboard-stats">
+                <div class="text-center">
+                  <p
+                    style="
+                      font-size: 2rem;
+                      font-weight: 700;
+                      color: var(--civic-blue);
+                      margin: 0;
+                    "
+                  >
+                    1567
+                  </p>
+                  <p class="text-sm text-muted" style="margin: 0">points</p>
+                </div>
+                <div class="stat-item show-md">
+                  <div class="stat-value">28</div>
+                  <div class="stat-label">Reports</div>
+                </div>
+                <div class="stat-item show-md">
+                  <div class="stat-value text-success">22</div>
+                  <div class="stat-label">Resolved</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="leaderboard-item">
+              <div class="leaderboard-left">
+                <div class="rank-display">#5</div>
+                <div class="leaderboard-avatar">MP</div>
+                <div>
+                  <h4 style="font-weight: 600; margin-bottom: 0.25rem">
+                    Meera Patel
+                  </h4>
+                  <div class="flex items-center gap-2">
+                    <div class="badge badge-primary text-sm">
+                      Active Citizen
+                    </div>
+                    <span class="text-sm text-muted">7 day streak</span>
+                  </div>
+                </div>
+              </div>
+              <div class="leaderboard-stats">
+                <div class="text-center">
+                  <p
+                    style="
+                      font-size: 2rem;
+                      font-weight: 700;
+                      color: var(--civic-blue);
+                      margin: 0;
+                    "
+                  >
+                    1342
+                  </p>
+                  <p class="text-sm text-muted" style="margin: 0">points</p>
+                </div>
+                <div class="stat-item show-md">
+                  <div class="stat-value">24</div>
+                  <div class="stat-label">Reports</div>
+                </div>
+                <div class="stat-item show-md">
+                  <div class="stat-value text-success">19</div>
+                  <div class="stat-label">Resolved</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Point System Explanation -->
+        <div class="card mt-8">
+          <div class="card-header">
+            <h3 class="card-title">
+              <span>⭐</span>
+              How Points Work
+            </h3>
+          </div>
+          <div class="card-content">
+            <div class="grid grid-md-4">
+              <div class="text-center p-4 border rounded">
+                <p
+                  style="
+                    font-size: 2rem;
+                    font-weight: 700;
+                    color: var(--civic-blue);
+                    margin-bottom: 0.5rem;
+                  "
+                >
+                  +50
+                </p>
+                <p class="text-sm" style="margin: 0">Report Submitted</p>
+              </div>
+              <div class="text-center p-4 border rounded">
+                <p
+                  style="
+                    font-size: 2rem;
+                    font-weight: 700;
+                    color: var(--civic-green);
+                    margin-bottom: 0.5rem;
+                  "
+                >
+                  +100
+                </p>
+                <p class="text-sm" style="margin: 0">Issue Resolved</p>
+              </div>
+              <div class="text-center p-4 border rounded">
+                <p
+                  style="
+                    font-size: 2rem;
+                    font-weight: 700;
+                    color: var(--civic-orange);
+                    margin-bottom: 0.5rem;
+                  "
+                >
+                  +25
+                </p>
+                <p class="text-sm" style="margin: 0">Quality Photos</p>
+              </div>
+              <div class="text-center p-4 border rounded">
+                <p
+                  style="
+                    font-size: 2rem;
+                    font-weight: 700;
+                    color: var(--civic-purple);
+                    margin-bottom: 0.5rem;
+                  "
+                >
+                  +10
+                </p>
+                <p class="text-sm" style="margin: 0">Daily Streak</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </main>
 
     <!-- Footer -->
     <footer class="footer">
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-brand">
-                    <div class="footer-brand-icon">📍</div>
-                    <p class="text-sm">
-                        Built for responsible citizens, by the community.
-                    </p>
-                </div>
-                <p class="text-sm text-muted">
-                    © 2024 CivicWatch. Making communities better, one report at a time.
-                </p>
-            </div>
+      <div class="container">
+        <div class="footer-content">
+          <div class="footer-brand">
+            <div class="footer-brand-icon">📍</div>
+            <p class="text-sm">
+              Built for responsible citizens, by the community.
+            </p>
+          </div>
+          <p class="text-sm text-muted">
+            © 2024 CivicWatch. Making communities better, one report at a time.
+          </p>
         </div>
+      </div>
     </footer>
-</body>
+  </body>
 </html>
