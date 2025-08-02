@@ -4,10 +4,494 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CivicWatch - Report a Civic Issue</title>
-    <link rel="stylesheet" href="styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Reset and Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --civic-blue: #3b82f6;
+            --civic-blue-hover: #2563eb;
+            --civic-green: #10b981;
+            --civic-green-hover: #059669;
+            --civic-orange: #f59e0b;
+            --civic-purple: #8b5cf6;
+            --background: #ffffff;
+            --foreground: #374151;
+            --muted: #f3f4f6;
+            --muted-foreground: #6b7280;
+            --card: #ffffff;
+            --border: #e5e7eb;
+            --input-border: #d1d5db;
+            --destructive: #ef4444;
+            --success: #10b981;
+            --warning: #f59e0b;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            background-color: var(--background);
+            color: var(--foreground);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        /* Header */
+        .header {
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            width: 100%;
+            border-bottom: 1px solid var(--border);
+            background-color: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            height: 4rem;
+            padding: 0 1rem;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+            margin-right: 2rem;
+        }
+
+        .logo-icon {
+            width: 2rem;
+            height: 2rem;
+            border-radius: 0.5rem;
+            background: linear-gradient(135deg, var(--civic-blue) 0%, var(--civic-green) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.25rem;
+        }
+
+        .logo-text {
+            font-size: 1.25rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--civic-blue) 0%, var(--civic-green) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            flex: 1;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+            color: var(--muted-foreground);
+            font-weight: 500;
+            font-size: 0.875rem;
+            transition: color 0.2s ease;
+            padding: 0.5rem;
+            border-radius: 0.375rem;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            color: var(--civic-blue);
+            background-color: rgba(59, 130, 246, 0.1);
+        }
+
+        .nav-link-text {
+            display: none;
+        }
+
+        @media (min-width: 640px) {
+            .nav-link-text {
+                display: inline;
+            }
+        }
+
+        .user-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            padding: 2rem 0;
+        }
+
+        /* Typography */
+        h1, h2, h3, h4, h5, h6 {
+            font-weight: 700;
+            line-height: 1.3;
+            margin-bottom: 0.5rem;
+        }
+
+        h1 {
+            font-size: 3rem;
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, var(--civic-blue) 0%, var(--civic-green) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .text-xl {
+            font-size: 1.25rem;
+        }
+
+        .text-muted {
+            color: var(--muted-foreground);
+        }
+
+        /* Spacing */
+        .mb-4 {
+            margin-bottom: 1rem;
+        }
+
+        .mb-6 {
+            margin-bottom: 1.5rem;
+        }
+
+        .mb-8 {
+            margin-bottom: 2rem;
+        }
+
+        .mt-4 {
+            margin-top: 1rem;
+        }
+
+        /* Cards */
+        .card {
+            background-color: var(--card);
+            border: 2px solid var(--border);
+            border-radius: 0.75rem;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+            overflow: hidden;
+        }
+
+        .card-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .card-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .card-description {
+            color: var(--muted-foreground);
+            font-size: 0.875rem;
+        }
+
+        .card-content {
+            padding: 1.5rem;
+        }
+
+        /* Forms */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 500;
+            font-size: 0.875rem;
+            margin-bottom: 0.5rem;
+            color: var(--foreground);
+        }
+
+        .form-required {
+            color: var(--destructive);
+        }
+
+        .form-input,
+        .form-select,
+        .form-textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--input-border);
+            border-radius: 0.375rem;
+            background-color: var(--background);
+            color: var(--foreground);
+            font-size: 0.875rem;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .form-input:focus,
+        .form-select:focus,
+        .form-textarea:focus {
+            outline: none;
+            border-color: var(--civic-blue);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 6rem;
+        }
+
+        .form-help {
+            font-size: 0.75rem;
+            color: var(--muted-foreground);
+            margin-top: 0.25rem;
+        }
+
+        /* Grid */
+        .grid {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .grid-md-2 {
+            grid-template-columns: 1fr;
+        }
+
+        .grid-md-3 {
+            grid-template-columns: 1fr;
+        }
+
+        @media (min-width: 768px) {
+            .grid-md-2 {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .grid-md-3 {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        /* Flexbox */
+        .flex {
+            display: flex;
+        }
+
+        .items-center {
+            align-items: center;
+        }
+
+        .justify-between {
+            justify-content: space-between;
+        }
+
+        .gap-2 {
+            gap: 0.5rem;
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 0.375rem;
+            font-weight: 600;
+            font-size: 0.875rem;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--civic-blue) 0%, var(--civic-green) 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, var(--civic-blue-hover) 0%, var(--civic-green-hover) 100%);
+            transform: translateY(-1px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            border: 1px solid var(--civic-blue);
+            color: var(--civic-blue);
+        }
+
+        .btn-outline:hover {
+            background-color: var(--civic-blue);
+            color: white;
+        }
+
+        .btn-sm {
+            padding: 0.5rem 1rem;
+            font-size: 0.75rem;
+        }
+
+        .btn-lg {
+            padding: 1rem 2rem;
+            font-size: 1rem;
+        }
+
+        .btn-full {
+            width: 100%;
+        }
+
+        /* Upload Area */
+        .upload-area {
+            border: 2px dashed rgba(107, 114, 128, 0.3);
+            border-radius: 0.5rem;
+            padding: 3rem 1.5rem;
+            text-align: center;
+            background-color: var(--muted);
+            transition: border-color 0.2s ease, background-color 0.2s ease;
+            cursor: pointer;
+        }
+
+        .upload-area:hover {
+            border-color: var(--civic-blue);
+            background-color: rgba(59, 130, 246, 0.05);
+        }
+
+        .upload-icon {
+            font-size: 3rem;
+            color: var(--muted-foreground);
+            margin-bottom: 1rem;
+        }
+
+        /* Image Preview */
+        .image-preview {
+            position: relative;
+            border-radius: 0.5rem;
+            overflow: hidden;
+            border: 1px solid var(--border);
+        }
+
+        .image-preview img {
+            width: 100%;
+            height: 8rem;
+            object-fit: cover;
+        }
+
+        .image-remove {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background-color: var(--destructive);
+            color: white;
+            border: none;
+            border-radius: 0.25rem;
+            width: 1.5rem;
+            height: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 0.875rem;
+        }
+
+        /* Alerts */
+        .alert {
+            padding: 1rem;
+            border-radius: 0.375rem;
+            border: 1px solid var(--border);
+            margin-bottom: 1rem;
+        }
+
+        .alert-info {
+            background-color: rgba(59, 130, 246, 0.1);
+            border-color: rgba(59, 130, 246, 0.2);
+            color: var(--civic-blue);
+        }
+
+        /* Footer */
+        .footer {
+            border-top: 1px solid var(--border);
+            background-color: var(--muted);
+            padding: 2.5rem 0;
+            margin-top: auto;
+        }
+
+        .footer-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+            text-align: center;
+        }
+
+        @media (min-width: 640px) {
+            .footer-content {
+                flex-direction: row;
+                justify-content: space-between;
+            }
+        }
+
+        .footer-brand {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .footer-brand-icon {
+            width: 1.5rem;
+            height: 1.5rem;
+            border-radius: 0.25rem;
+            background: linear-gradient(135deg, var(--civic-blue) 0%, var(--civic-green) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1rem;
+        }
+
+        /* Loading Animation */
+        .loading {
+            display: inline-block;
+            width: 1rem;
+            height: 1rem;
+            border: 2px solid var(--muted);
+            border-radius: 50%;
+            border-top-color: var(--civic-blue);
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
 </head>
 <body>
     <!-- Header -->
@@ -63,7 +547,7 @@
             <div style="max-width: 64rem; margin: 0 auto;">
                 <div class="card">
                     <div class="card-header">
-                        <h3 class="card-title flex items-center gap-2">
+                        <h3 class="card-title">
                             <span>🚨</span>
                             Issue Details
                         </h3>
@@ -74,7 +558,7 @@
                     <div class="card-content">
                         <form id="reportForm">
                             <!-- Title and Category -->
-                            <div class="grid grid-md-2 gap-4 mb-6">
+                            <div class="grid grid-md-2 mb-6">
                                 <div class="form-group">
                                     <label for="title" class="form-label">
                                         Issue Title <span class="form-required">*</span>
@@ -109,7 +593,7 @@
                             </div>
 
                             <!-- Location and DIGIPIN -->
-                            <div class="grid grid-md-2 gap-4 mb-6">
+                            <div class="grid grid-md-2 mb-6">
                                 <div class="form-group">
                                     <label for="location" class="form-label">Location</label>
                                     <input 
@@ -162,7 +646,7 @@
                                 </div>
                                 
                                 <!-- Image Previews -->
-                                <div id="imagePreview" class="grid grid-md-3 gap-4 mt-4"></div>
+                                <div id="imagePreview" class="grid grid-md-3 mt-4"></div>
                             </div>
 
                             <!-- Description -->
@@ -197,7 +681,7 @@
                                     <span>📍</span>
                                     <strong>Important:</strong>
                                 </div>
-                                <p class="mt-2">
+                                <p style="margin-top: 0.5rem;">
                                     DIGIPIN is mandatory for all submissions. This helps us verify the authenticity of reports and prevent spam.
                                 </p>
                             </div>
@@ -219,17 +703,230 @@
             <div class="footer-content">
                 <div class="footer-brand">
                     <div class="footer-brand-icon">📍</div>
-                    <p class="text-sm">
+                    <p style="font-size: 0.875rem;">
                         Built for responsible citizens, by the community.
                     </p>
                 </div>
-                <p class="text-sm text-muted">
+                <p style="font-size: 0.875rem;" class="text-muted">
                     © 2024 CivicWatch. Making communities better, one report at a time.
                 </p>
             </div>
         </div>
     </footer>
 
-    <script src="scripts.js"></script>
+    <script>
+        // CivicWatch - Main JavaScript
+
+        // Global App State
+        window.CivicWatch = {
+          init: function() {
+            this.setupEventListeners();
+          },
+
+          setupEventListeners: function() {
+            // Image upload handling
+            this.setupImageUpload();
+            
+            // Form submissions
+            this.setupForms();
+          },
+
+          // Image Upload Functionality
+          setupImageUpload: function() {
+            const uploadArea = document.getElementById('uploadArea');
+            const fileInput = document.getElementById('imageInput');
+            const previewContainer = document.getElementById('imagePreview');
+
+            if (!uploadArea || !fileInput) return;
+
+            uploadArea.addEventListener('click', () => fileInput.click());
+            
+            uploadArea.addEventListener('dragover', (e) => {
+              e.preventDefault();
+              uploadArea.style.borderColor = 'var(--civic-blue)';
+              uploadArea.style.backgroundColor = 'rgba(59, 130, 246, 0.05)';
+            });
+
+            uploadArea.addEventListener('dragleave', (e) => {
+              e.preventDefault();
+              uploadArea.style.borderColor = '';
+              uploadArea.style.backgroundColor = '';
+            });
+
+            uploadArea.addEventListener('drop', (e) => {
+              e.preventDefault();
+              uploadArea.style.borderColor = '';
+              uploadArea.style.backgroundColor = '';
+              
+              const files = Array.from(e.dataTransfer.files);
+              this.handleFiles(files.slice(0, 3)); // Limit to 3 files
+            });
+
+            fileInput.addEventListener('change', (e) => {
+              const files = Array.from(e.target.files);
+              this.handleFiles(files.slice(0, 3)); // Limit to 3 files
+            });
+          },
+
+          handleFiles: function(files) {
+            const previewContainer = document.getElementById('imagePreview');
+            if (!previewContainer) return;
+
+            previewContainer.innerHTML = '';
+            
+            files.forEach((file, index) => {
+              if (file.type.startsWith('image/')) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                  const preview = this.createImagePreview(e.target.result, index);
+                  previewContainer.appendChild(preview);
+                };
+                reader.readAsDataURL(file);
+              }
+            });
+          },
+
+          createImagePreview: function(src, index) {
+            const container = document.createElement('div');
+            container.className = 'image-preview';
+            
+            container.innerHTML = `
+              <img src="${src}" alt="Preview ${index + 1}">
+              <button type="button" class="image-remove" onclick="CivicWatch.removeImage(this)">×</button>
+            `;
+            
+            return container;
+          },
+
+          removeImage: function(button) {
+            button.parentElement.remove();
+          },
+
+          // Form Handling
+          setupForms: function() {
+            // Issue Report Form
+            const reportForm = document.getElementById('reportForm');
+            if (reportForm) {
+              reportForm.addEventListener('submit', this.handleReportSubmission.bind(this));
+            }
+
+            // AI Generate Description
+            const aiButton = document.getElementById('aiGenerate');
+            if (aiButton) {
+              aiButton.addEventListener('click', this.generateAIDescription.bind(this));
+            }
+          },
+
+          handleReportSubmission: function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(e.target);
+            const data = Object.fromEntries(formData.entries());
+            
+            // Validate DIGIPIN
+            if (!data.digiPin) {
+              this.showAlert('DIGIPIN is mandatory for submission', 'warning');
+              return;
+            }
+
+            // Show loading state
+            const submitBtn = e.target.querySelector('button[type="submit"]');
+            const originalText = submitBtn.textContent;
+            submitBtn.innerHTML = '<span class="loading"></span> Submitting Report...';
+            submitBtn.disabled = true;
+
+            // Simulate API call
+            setTimeout(() => {
+              console.log('Form submitted:', data);
+              this.showSuccessMessage();
+              e.target.reset();
+              document.getElementById('imagePreview').innerHTML = '';
+              
+              submitBtn.textContent = originalText;
+              submitBtn.disabled = false;
+            }, 1500);
+          },
+
+          generateAIDescription: function() {
+            const categorySelect = document.getElementById('category');
+            const descriptionTextarea = document.getElementById('description');
+            const aiButton = document.getElementById('aiGenerate');
+            
+            if (!categorySelect.value) {
+              this.showAlert('Please select a category first to generate description', 'warning');
+              return;
+            }
+
+            const images = document.querySelectorAll('#imagePreview .image-preview');
+            if (images.length === 0) {
+              this.showAlert('Please upload at least one image to generate description', 'warning');
+              return;
+            }
+
+            // Show loading state
+            aiButton.innerHTML = '<span class="loading"></span> Generating...';
+            aiButton.disabled = true;
+
+            // Mock AI description generation
+            const descriptions = {
+              "Road & Infrastructure": "Pothole observed on main road causing traffic disruption. The damaged asphalt surface poses safety risks for vehicles and pedestrians. Immediate repair required to prevent further deterioration.",
+              "Waste Management": "Overflowing garbage bin in residential area creating unsanitary conditions. Waste spillage attracting pests and causing foul odor. Regular collection schedule needs to be maintained.",
+              "Water Supply": "Water leakage detected in the pipeline causing wastage and potential structural damage. Immediate attention required to prevent further water loss and property damage.",
+              "Street Lighting": "Non-functional street light creating safety hazard during nighttime. Poor visibility affecting pedestrian and vehicle safety. Replacement or repair needed urgently.",
+              "Public Safety": "Safety concern identified requiring immediate attention from relevant authorities. Proper measures needed to ensure public welfare and security.",
+              "default": "Issue requiring civic attention and proper resolution. The situation needs assessment and appropriate action from relevant municipal authorities."
+            };
+
+            setTimeout(() => {
+              const generatedDesc = descriptions[categorySelect.value] || descriptions.default;
+              descriptionTextarea.value = generatedDesc;
+              
+              aiButton.innerHTML = '✨ AI Generate';
+              aiButton.disabled = false;
+            }, 2000);
+          },
+
+          showSuccessMessage: function() {
+            const container = document.querySelector('.main-content .container');
+            const successCard = document.createElement('div');
+            successCard.className = 'card';
+            successCard.style.cssText = 'border-color: var(--civic-green); background-color: rgba(16, 185, 129, 0.05); margin-bottom: 2rem;';
+            
+            successCard.innerHTML = `
+              <div class="card-content text-center">
+                <div style="font-size: 4rem; color: var(--civic-green); margin-bottom: 1rem;">✅</div>
+                <h2 style="color: var(--civic-green); margin-bottom: 0.5rem;">Issue Reported Successfully!</h2>
+                <p class="text-muted mb-4">Your civic issue has been submitted and will be reviewed by the authorities.</p>
+                <div style="background-color: var(--civic-green); color: white; padding: 0.25rem 0.75rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 500; display: inline-block;">Report ID: CR-${Date.now().toString().slice(-6)}</div>
+              </div>
+            `;
+            
+            container.insertBefore(successCard, container.firstChild);
+            
+            // Remove success message after 5 seconds
+            setTimeout(() => {
+              successCard.remove();
+            }, 5000);
+          },
+
+          showAlert: function(message, type = 'info') {
+            const alert = document.createElement('div');
+            alert.className = `alert alert-${type}`;
+            alert.textContent = message;
+            
+            const container = document.querySelector('.main-content .container');
+            container.insertBefore(alert, container.firstChild);
+            
+            setTimeout(() => {
+              alert.remove();
+            }, 5000);
+          }
+        };
+
+        // Initialize when DOM is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+          window.CivicWatch.init();
+        });
+    </script>
 </body>
 </html>
