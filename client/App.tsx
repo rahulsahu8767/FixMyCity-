@@ -96,7 +96,19 @@ function ReportIssuePage() {
     setTimeout(() => {
       setIsSubmitting(false);
       setSubmitted(true);
-      setTimeout(() => setSubmitted(false), 3000);
+      setTimeout(() => {
+        setSubmitted(false);
+        setFormData({
+          title: "",
+          category: "",
+          description: "",
+          digiPin: "",
+          location: "",
+          name: "",
+          email: "",
+          contact: "",
+        });
+      }, 3000);
     }, 1500);
   };
 
