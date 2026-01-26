@@ -16,6 +16,9 @@ export function ReportIssue() {
     description: "",
     digiPin: "",
     location: "",
+    name: "",
+    email: "",
+    contact: "",
   });
   
   const [images, setImages] = useState<File[]>([]);
