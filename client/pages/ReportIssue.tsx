@@ -188,6 +188,42 @@ export function ReportIssue() {
               </div>
             </div>
 
+            {/* Contact Information */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="name">Name *</Label>
+                <Input
+                  id="name"
+                  placeholder="Your full name"
+                  value={formData.name}
+                  onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
+                  required
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="email">Email *</Label>
+                <Input
+                  id="email"
+                  type="email"
+                  placeholder="your.email@example.com"
+                  value={formData.email}
+                  onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
+                  required
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="contact">Contact Number *</Label>
+                <Input
+                  id="contact"
+                  type="tel"
+                  placeholder="Your phone number"
+                  value={formData.contact}
+                  onChange={(e) => setFormData(prev => ({ ...prev, contact: e.target.value }))}
+                  required
+                />
+              </div>
+            </div>
+
             {/* Location and DIGIPIN */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
