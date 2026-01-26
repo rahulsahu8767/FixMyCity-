@@ -75,6 +75,9 @@ function ReportIssuePage() {
     description: "",
     digiPin: "",
     location: "",
+    name: "",
+    email: "",
+    contact: "",
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
