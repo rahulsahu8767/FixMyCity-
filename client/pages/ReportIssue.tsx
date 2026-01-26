@@ -107,6 +107,9 @@ export function ReportIssue() {
           description: "",
           digiPin: "",
           location: "",
+          name: "",
+          email: "",
+          contact: "",
         });
         setImages([]);
         setImagePreviews([]);
