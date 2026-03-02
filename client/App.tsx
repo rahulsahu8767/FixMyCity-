@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { AdminDashboard } from "./pages/AdminDashboard";
+import { CommunityPostsPage } from "./pages/CommunityPosts";
 import {
   initializeData,
   validateAdminLogin,
@@ -33,10 +34,10 @@ function Navigation({
           </span>
         </div>
 
-        <nav className="flex space-x-6">
+        <nav className="flex space-x-6 overflow-x-auto">
           <button
             onClick={() => setCurrentPage("report")}
-            className={`px-3 py-2 rounded-md transition-colors ${
+            className={`px-3 py-2 rounded-md transition-colors whitespace-nowrap ${
               currentPage === "report"
                 ? "bg-blue-500 text-white"
                 : "text-gray-600 hover:text-blue-600"
@@ -46,7 +47,7 @@ function Navigation({
           </button>
           <button
             onClick={() => setCurrentPage("leaderboard")}
-            className={`px-3 py-2 rounded-md transition-colors ${
+            className={`px-3 py-2 rounded-md transition-colors whitespace-nowrap ${
               currentPage === "leaderboard"
                 ? "bg-blue-500 text-white"
                 : "text-gray-600 hover:text-blue-600"
@@ -56,18 +57,28 @@ function Navigation({
           </button>
           <button
             onClick={() => setCurrentPage("social")}
-            className={`px-3 py-2 rounded-md transition-colors ${
+            className={`px-3 py-2 rounded-md transition-colors whitespace-nowrap ${
               currentPage === "social"
                 ? "bg-blue-500 text-white"
                 : "text-gray-600 hover:text-blue-600"
             }`}
           >
-            👥 Community
+            📰 Issues
+          </button>
+          <button
+            onClick={() => setCurrentPage("community-posts")}
+            className={`px-3 py-2 rounded-md transition-colors whitespace-nowrap ${
+              currentPage === "community-posts"
+                ? "bg-green-500 text-white"
+                : "text-gray-600 hover:text-green-600"
+            }`}
+          >
+            ✨ Success Stories
           </button>
           {!isAdminLoggedIn ? (
             <button
               onClick={onAdminLogin}
-              className={`px-3 py-2 rounded-md transition-colors ${
+              className={`px-3 py-2 rounded-md transition-colors whitespace-nowrap ${
                 currentPage === "admin-login"
                   ? "bg-green-500 text-white"
                   : "text-gray-600 hover:text-green-600"
@@ -93,11 +104,39 @@ function ReportIssuePage() {
     name: "",
     email: "",
     contact: "",
+    imageData: "",
+    imageType: "",
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const [imageSizeError, setImageSizeError] = useState("");
+
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Check file size (10MB = 10485760 bytes)
+    const MAX_SIZE = 10 * 1024 * 1024;
+    if (file.size > MAX_SIZE) {
+      setImageSizeError("File size must not exceed 10MB");
+      return;
+    }
+
+    setImageSizeError("");
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const base64String = event.target?.result as string;
+      setFormData((prev) => ({
+        ...prev,
+        imageData: base64String,
+        imageType: file.type,
+      }));
+    };
+    reader.readAsDataURL(file);
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -131,6 +170,8 @@ function ReportIssuePage() {
           contact: formData.contact,
           status: "reported",
           adminNotes: "",
+          imageData: formData.imageData,
+          imageType: formData.imageType,
         });
 
         setIsSubmitting(false);
@@ -146,6 +187,8 @@ function ReportIssuePage() {
             name: "",
             email: "",
             contact: "",
+            imageData: "",
+            imageType: "",
           });
         }, 3000);
       } catch (error) {
@@ -323,20 +366,79 @@ function ReportIssuePage() {
               <label className="block text-sm font-medium mb-2">
                 DIGIPIN * (Mandatory)
               </label>
-              <input
-                type="text"
-                placeholder="Enter your DIGIPIN"
-                value={formData.digiPin}
-                onChange={(e) =>
-                  setFormData((prev) => ({ ...prev, digiPin: e.target.value }))
-                }
-                className="w-full p-3 border-2 border-blue-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                required
-              />
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  placeholder="Enter your DIGIPIN"
+                  value={formData.digiPin}
+                  onChange={(e) =>
+                    setFormData((prev) => ({ ...prev, digiPin: e.target.value }))
+                  }
+                  className="flex-1 p-3 border-2 border-blue-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  required
+                />
+                <a
+                  href="https://dac.indiapost.gov.in/mydigipin/home"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-4 py-3 bg-blue-500 text-white rounded-md hover:bg-blue-600 whitespace-nowrap font-medium text-sm"
+                >
+                  🔗 Know DIGIPIN
+                </a>
+              </div>
               <p className="text-xs text-blue-600 mt-1">
                 DIGIPIN is mandatory for verification
               </p>
             </div>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium mb-2">
+              Issue Photo/Video (Max 10MB)
+            </label>
+            <div className="flex items-center justify-center w-full">
+              <label className="flex flex-col items-center justify-center w-full p-6 border-2 border-dashed border-blue-300 rounded-lg cursor-pointer hover:bg-blue-50 transition">
+                <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                  <svg
+                    className="w-8 h-8 text-blue-500 mb-2"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M12 4v16m8-8H4"
+                    />
+                  </svg>
+                  <p className="text-sm text-gray-600">
+                    {formData.imageData ? (
+                      <span className="text-green-600 font-medium">
+                        ✓ Image uploaded
+                      </span>
+                    ) : (
+                      <>
+                        <span className="font-semibold">Click to upload</span> or
+                        drag and drop
+                      </>
+                    )}
+                  </p>
+                  <p className="text-xs text-gray-500">
+                    PNG, JPG, MP4, MOV up to 10MB
+                  </p>
+                </div>
+                <input
+                  type="file"
+                  className="hidden"
+                  accept="image/*,video/*"
+                  onChange={handleImageUpload}
+                />
+              </label>
+            </div>
+            {imageSizeError && (
+              <p className="text-sm text-red-600 mt-2">{imageSizeError}</p>
+            )}
           </div>
 
           <div>
@@ -943,6 +1045,8 @@ function App() {
         return <LeaderboardPage />;
       case "social":
         return <SocialPage />;
+      case "community-posts":
+        return <CommunityPostsPage />;
       default:
         return <ReportIssuePage />;
     }

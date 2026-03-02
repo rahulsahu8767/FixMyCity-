@@ -14,6 +14,30 @@ export interface CivicIssue {
   submittedAt: string;
   resolvedAt?: string;
   adminNotes?: string;
+  imageData?: string; // Base64 encoded image
+  imageType?: string; // mime type
+}
+
+export interface CommunityPost {
+  id: string;
+  issueId?: string; // reference to original issue if any
+  authorName: string;
+  authorEmail: string;
+  title: string;
+  caption: string;
+  beforeImage: string; // Base64
+  afterImage?: string; // Base64
+  beforeImageType?: string; // mime type
+  afterImageType?: string; // mime type
+  reportedAt: string;
+  editedAt?: string;
+  likes: number;
+  comments: Array<{
+    id: string;
+    authorName: string;
+    text: string;
+    postedAt: string;
+  }>;
 }
 
 export interface UserPoints {
@@ -33,6 +57,7 @@ const STORAGE_KEYS = {
   ISSUES: "civic_issues",
   USER_POINTS: "user_points",
   ADMIN_CREDENTIALS: "admin_credentials",
+  COMMUNITY_POSTS: "community_posts",
 };
 
 // Initialize default admin credentials
@@ -55,6 +80,9 @@ export function initializeData() {
       STORAGE_KEYS.ADMIN_CREDENTIALS,
       JSON.stringify(DEFAULT_ADMIN)
     );
+  }
+  if (!localStorage.getItem(STORAGE_KEYS.COMMUNITY_POSTS)) {
+    localStorage.setItem(STORAGE_KEYS.COMMUNITY_POSTS, JSON.stringify([]));
   }
 }
 
@@ -184,4 +212,79 @@ export function updateAdminCredentials(username: string, password: string): bool
 export function validateAdminLogin(username: string, password: string): boolean {
   const admin = getAdminCredentials();
   return admin.username === username && admin.password === password;
+}
+
+// Community Posts Management
+export function addCommunityPost(post: Omit<CommunityPost, "id" | "reportedAt" | "likes" | "comments">): CommunityPost {
+  const posts = getAllCommunityPosts();
+  const newPost: CommunityPost = {
+    ...post,
+    id: `POST-${Date.now().toString().slice(-6)}`,
+    reportedAt: new Date().toISOString(),
+    likes: 0,
+    comments: [],
+  };
+
+  posts.push(newPost);
+  localStorage.setItem(STORAGE_KEYS.COMMUNITY_POSTS, JSON.stringify(posts));
+  return newPost;
+}
+
+export function getAllCommunityPosts(): CommunityPost[] {
+  const data = localStorage.getItem(STORAGE_KEYS.COMMUNITY_POSTS);
+  return data ? JSON.parse(data) : [];
+}
+
+export function getCommunityPostById(id: string): CommunityPost | null {
+  const posts = getAllCommunityPosts();
+  return posts.find((post) => post.id === id) || null;
+}
+
+export function updateCommunityPost(id: string, updates: Partial<CommunityPost>): CommunityPost | null {
+  const posts = getAllCommunityPosts();
+  const index = posts.findIndex((post) => post.id === id);
+
+  if (index === -1) return null;
+
+  const updatedPost = { ...posts[index], ...updates, editedAt: new Date().toISOString() };
+  posts[index] = updatedPost;
+
+  localStorage.setItem(STORAGE_KEYS.COMMUNITY_POSTS, JSON.stringify(posts));
+  return updatedPost;
+}
+
+export function likeCommunityPost(id: string): CommunityPost | null {
+  const post = getCommunityPostById(id);
+  if (!post) return null;
+
+  return updateCommunityPost(id, { likes: post.likes + 1 });
+}
+
+export function addCommentToPost(
+  postId: string,
+  authorName: string,
+  text: string
+): CommunityPost | null {
+  const post = getCommunityPostById(postId);
+  if (!post) return null;
+
+  const newComment = {
+    id: `COMMENT-${Date.now().toString().slice(-6)}`,
+    authorName,
+    text,
+    postedAt: new Date().toISOString(),
+  };
+
+  const updatedComments = [...post.comments, newComment];
+  return updateCommunityPost(postId, { comments: updatedComments });
+}
+
+export function deleteCommunityPost(id: string): boolean {
+  const posts = getAllCommunityPosts();
+  const filtered = posts.filter((post) => post.id !== id);
+
+  if (filtered.length === posts.length) return false;
+
+  localStorage.setItem(STORAGE_KEYS.COMMUNITY_POSTS, JSON.stringify(filtered));
+  return true;
 }

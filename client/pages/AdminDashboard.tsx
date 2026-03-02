@@ -361,6 +361,25 @@ export function AdminDashboard({ onLogout }: { onLogout: () => void }) {
                       <p className="text-gray-800">{issue.description}</p>
                     </div>
 
+                    {issue.imageData && (
+                      <div className="mb-4">
+                        <p className="text-sm text-gray-600 mb-2">Attached Image/Video</p>
+                        {issue.imageType?.startsWith("video/") ? (
+                          <video
+                            src={issue.imageData}
+                            controls
+                            className="w-full max-h-64 rounded-lg border border-gray-300"
+                          />
+                        ) : (
+                          <img
+                            src={issue.imageData}
+                            alt="Issue"
+                            className="w-full max-h-64 object-cover rounded-lg border border-gray-300"
+                          />
+                        )}
+                      </div>
+                    )}
+
                     {issue.adminNotes && (
                       <div className="mb-4 bg-blue-50 border border-blue-200 p-3 rounded-lg">
                         <p className="text-sm text-gray-600 mb-1">Admin Notes</p>
