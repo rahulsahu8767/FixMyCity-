@@ -465,57 +465,78 @@ function LeaderboardPage() {
       </div>
 
       {/* Top 3 Podium */}
-      <div className="mb-8">
-        <h2 className="text-2xl font-bold text-center mb-6">
-          🏆 Top Contributors
-        </h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-4xl mx-auto">
-          {/* 2nd Place */}
-          <div className="md:order-1 border-2 border-gray-300 rounded-lg p-6 text-center bg-white">
-            <div className="text-5xl mb-3">🥈</div>
-            <div className="w-16 h-16 bg-blue-100 rounded-full mx-auto mb-3 flex items-center justify-center">
-              <span className="text-lg font-bold text-blue-600">RK</span>
-            </div>
-            <h3 className="font-bold text-lg">{leaderboard[1].name}</h3>
-            <p className="text-2xl font-bold text-gray-500 mb-2">
-              {leaderboard[1].points} pts
-            </p>
-            <div className="bg-blue-500 text-white text-sm px-3 py-1 rounded-full">
-              {leaderboard[1].level}
-            </div>
-          </div>
+      {leaderboard.length > 0 && (
+        <div className="mb-8">
+          <h2 className="text-2xl font-bold text-center mb-6">
+            🏆 Top Contributors
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-4xl mx-auto">
+            {/* 2nd Place */}
+            {leaderboard.length > 1 && (
+              <div className="md:order-1 border-2 border-gray-300 rounded-lg p-6 text-center bg-white">
+                <div className="text-5xl mb-3">🥈</div>
+                <div className="w-16 h-16 bg-blue-100 rounded-full mx-auto mb-3 flex items-center justify-center">
+                  <span className="text-lg font-bold text-blue-600">
+                    {leaderboard[1].name
+                      .split(" ")
+                      .map((n: string) => n[0])
+                      .join("")}
+                  </span>
+                </div>
+                <h3 className="font-bold text-lg">{leaderboard[1].name}</h3>
+                <p className="text-2xl font-bold text-gray-500 mb-2">
+                  {leaderboard[1].points} pts
+                </p>
+                <div className="bg-blue-500 text-white text-sm px-3 py-1 rounded-full">
+                  {leaderboard[1].level}
+                </div>
+              </div>
+            )}
 
-          {/* 1st Place */}
-          <div className="md:order-2 border-4 border-yellow-400 rounded-lg p-6 text-center bg-gradient-to-br from-yellow-50 to-orange-50">
-            <div className="text-6xl mb-3">🏆</div>
-            <div className="w-20 h-20 bg-blue-100 rounded-full mx-auto mb-3 flex items-center justify-center ring-4 ring-yellow-400">
-              <span className="text-xl font-bold text-blue-600">PS</span>
+            {/* 1st Place */}
+            <div className="md:order-2 border-4 border-yellow-400 rounded-lg p-6 text-center bg-gradient-to-br from-yellow-50 to-orange-50">
+              <div className="text-6xl mb-3">🏆</div>
+              <div className="w-20 h-20 bg-blue-100 rounded-full mx-auto mb-3 flex items-center justify-center ring-4 ring-yellow-400">
+                <span className="text-xl font-bold text-blue-600">
+                  {leaderboard[0].name
+                    .split(" ")
+                    .map((n: string) => n[0])
+                    .join("")}
+                </span>
+              </div>
+              <h3 className="font-bold text-xl">{leaderboard[0].name}</h3>
+              <p className="text-3xl font-bold text-yellow-600 mb-2">
+                {leaderboard[0].points} pts
+              </p>
+              <div className="bg-gradient-to-r from-yellow-500 to-orange-500 text-white text-sm px-3 py-1 rounded-full">
+                👑 {leaderboard[0].level}
+              </div>
             </div>
-            <h3 className="font-bold text-xl">{leaderboard[0].name}</h3>
-            <p className="text-3xl font-bold text-yellow-600 mb-2">
-              {leaderboard[0].points} pts
-            </p>
-            <div className="bg-gradient-to-r from-yellow-500 to-orange-500 text-white text-sm px-3 py-1 rounded-full">
-              👑 {leaderboard[0].level}
-            </div>
-          </div>
 
-          {/* 3rd Place */}
-          <div className="md:order-3 border-2 border-orange-400 rounded-lg p-6 text-center bg-white">
-            <div className="text-5xl mb-3">🥉</div>
-            <div className="w-16 h-16 bg-green-100 rounded-full mx-auto mb-3 flex items-center justify-center">
-              <span className="text-lg font-bold text-green-600">AD</span>
-            </div>
-            <h3 className="font-bold text-lg">{leaderboard[2].name}</h3>
-            <p className="text-2xl font-bold text-orange-500 mb-2">
-              {leaderboard[2].points} pts
-            </p>
-            <div className="bg-green-500 text-white text-sm px-3 py-1 rounded-full">
-              {leaderboard[2].level}
-            </div>
+            {/* 3rd Place */}
+            {leaderboard.length > 2 && (
+              <div className="md:order-3 border-2 border-orange-400 rounded-lg p-6 text-center bg-white">
+                <div className="text-5xl mb-3">🥉</div>
+                <div className="w-16 h-16 bg-green-100 rounded-full mx-auto mb-3 flex items-center justify-center">
+                  <span className="text-lg font-bold text-green-600">
+                    {leaderboard[2].name
+                      .split(" ")
+                      .map((n: string) => n[0])
+                      .join("")}
+                  </span>
+                </div>
+                <h3 className="font-bold text-lg">{leaderboard[2].name}</h3>
+                <p className="text-2xl font-bold text-orange-500 mb-2">
+                  {leaderboard[2].points} pts
+                </p>
+                <div className="bg-green-500 text-white text-sm px-3 py-1 rounded-full">
+                  {leaderboard[2].level}
+                </div>
+              </div>
+            )}
           </div>
         </div>
-      </div>
+      )}
 
       {/* Full Rankings */}
       <div className="bg-white border rounded-lg shadow-sm">
@@ -523,61 +544,68 @@ function LeaderboardPage() {
           <h3 className="text-lg font-semibold">Complete Rankings</h3>
         </div>
         <div className="p-6">
-          {leaderboard.map((user) => (
-            <div
-              key={user.rank}
-              className={`flex items-center justify-between p-4 rounded-lg mb-4 ${
-                user.rank <= 3
-                  ? "bg-gradient-to-r from-blue-50 to-green-50 border border-blue-200"
-                  : "bg-gray-50"
-              }`}
-            >
-              <div className="flex items-center space-x-4">
-                <div className="w-12 text-center text-2xl">
-                  {user.rank === 1
-                    ? "🏆"
-                    : user.rank === 2
-                      ? "🥈"
-                      : user.rank === 3
-                        ? "🥉"
-                        : `#${user.rank}`}
-                </div>
-                <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
-                  <span className="font-semibold text-blue-600">
-                    {user.name
-                      .split(" ")
-                      .map((n) => n[0])
-                      .join("")}
-                  </span>
-                </div>
-                <div>
-                  <h4 className="font-semibold">{user.name}</h4>
-                  <div className="text-sm text-blue-600 bg-blue-100 px-2 py-1 rounded">
-                    {user.level}
+          {leaderboard.length === 0 ? (
+            <div className="text-center py-8 text-gray-500">
+              <p className="text-lg mb-2">No contributors yet</p>
+              <p className="text-sm">The leaderboard will update as community members report issues</p>
+            </div>
+          ) : (
+            leaderboard.map((user) => (
+              <div
+                key={user.rank}
+                className={`flex items-center justify-between p-4 rounded-lg mb-4 ${
+                  user.rank <= 3
+                    ? "bg-gradient-to-r from-blue-50 to-green-50 border border-blue-200"
+                    : "bg-gray-50"
+                }`}
+              >
+                <div className="flex items-center space-x-4">
+                  <div className="w-12 text-center text-2xl">
+                    {user.rank === 1
+                      ? "🏆"
+                      : user.rank === 2
+                        ? "🥈"
+                        : user.rank === 3
+                          ? "🥉"
+                          : `#${user.rank}`}
+                  </div>
+                  <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+                    <span className="font-semibold text-blue-600">
+                      {user.name
+                        .split(" ")
+                        .map((n: string) => n[0])
+                        .join("")}
+                    </span>
+                  </div>
+                  <div>
+                    <h4 className="font-semibold">{user.name}</h4>
+                    <div className="text-sm text-blue-600 bg-blue-100 px-2 py-1 rounded">
+                      {user.level}
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              <div className="text-right">
-                <p className="text-2xl font-bold text-blue-600">
-                  {user.points}
-                </p>
-                <p className="text-sm text-gray-500">points</p>
-              </div>
+                <div className="text-right">
+                  <p className="text-2xl font-bold text-blue-600">
+                    {user.points}
+                  </p>
+                  <p className="text-sm text-gray-500">points</p>
+                </div>
 
-              <div className="hidden md:flex flex-col text-center">
-                <p className="text-lg font-semibold">{user.reports}</p>
-                <p className="text-xs text-gray-500">Reports</p>
-              </div>
+                <div className="hidden md:flex flex-col text-center">
+                  <p className="text-lg font-semibold">{user.reports}</p>
+                  <p className="text-xs text-gray-500">Reports</p>
+                </div>
 
-              <div className="hidden md:flex flex-col text-center">
-                <p className="text-lg font-semibold text-green-600">
-                  {user.resolved}
-                </p>
-                <p className="text-xs text-gray-500">Resolved</p>
+                <div className="hidden md:flex flex-col text-center">
+                  <p className="text-lg font-semibold text-green-600">
+                    {user.resolved}
+                  </p>
+                  <p className="text-xs text-gray-500">Resolved</p>
+                </div>
               </div>
-            </div>
-          ))}
+            ))
+          )}
         </div>
       </div>
 
