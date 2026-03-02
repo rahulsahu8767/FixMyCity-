@@ -1,12 +1,25 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { AdminDashboard } from "./pages/AdminDashboard";
+import {
+  initializeData,
+  validateAdminLogin,
+  getAllIssues,
+  getAllUserPoints,
+  isDuplicateIssue,
+  addIssue,
+} from "./lib/dataManager";
 
 // Simple Navigation Component
 function Navigation({
   currentPage,
   setCurrentPage,
+  isAdminLoggedIn,
+  onAdminLogin,
 }: {
   currentPage: string;
   setCurrentPage: (page: string) => void;
+  isAdminLoggedIn: boolean;
+  onAdminLogin: () => void;
 }) {
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-white shadow-sm">
@@ -51,16 +64,18 @@ function Navigation({
           >
             👥 Community
           </button>
-          <button
-            onClick={() => setCurrentPage("login")}
-            className={`px-3 py-2 rounded-md transition-colors ${
-              currentPage === "login"
-                ? "bg-blue-500 text-white"
-                : "text-gray-600 hover:text-blue-600"
-            }`}
-          >
-            👤 Login
-          </button>
+          {!isAdminLoggedIn ? (
+            <button
+              onClick={onAdminLogin}
+              className={`px-3 py-2 rounded-md transition-colors ${
+                currentPage === "admin-login"
+                  ? "bg-green-500 text-white"
+                  : "text-gray-600 hover:text-green-600"
+              }`}
+            >
+              🛡️ Admin
+            </button>
+          ) : null}
         </nav>
       </div>
     </header>
@@ -82,33 +97,62 @@ function ReportIssuePage() {
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    setErrorMessage("");
+
     if (!formData.digiPin) {
-      alert("DIGIPIN is mandatory!");
+      setErrorMessage("DIGIPIN is mandatory!");
+      return;
+    }
+
+    // Check for duplicate issue
+    if (isDuplicateIssue(formData.digiPin, formData.category)) {
+      setErrorMessage(
+        "An issue with this DIGIPIN and category already exists in the system. Please use a different DIGIPIN or category."
+      );
       return;
     }
 
     setIsSubmitting(true);
-    console.log("Submitting report:", formData);
 
     setTimeout(() => {
-      setIsSubmitting(false);
-      setSubmitted(true);
-      setTimeout(() => {
-        setSubmitted(false);
-        setFormData({
-          title: "",
-          category: "",
-          description: "",
-          digiPin: "",
-          location: "",
-          name: "",
-          email: "",
-          contact: "",
+      try {
+        addIssue({
+          title: formData.title,
+          category: formData.category,
+          description: formData.description,
+          digiPin: formData.digiPin,
+          location: formData.location,
+          name: formData.name,
+          email: formData.email,
+          contact: formData.contact,
+          status: "reported",
+          adminNotes: "",
         });
-      }, 3000);
+
+        setIsSubmitting(false);
+        setSubmitted(true);
+        setTimeout(() => {
+          setSubmitted(false);
+          setFormData({
+            title: "",
+            category: "",
+            description: "",
+            digiPin: "",
+            location: "",
+            name: "",
+            email: "",
+            contact: "",
+          });
+        }, 3000);
+      } catch (error) {
+        setIsSubmitting(false);
+        setErrorMessage("Error submitting issue. Please try again.");
+        console.error(error);
+      }
     }, 1500);
   };
 
@@ -142,11 +186,8 @@ function ReportIssuePage() {
           </h2>
           <p className="text-gray-600 mb-4">
             Your civic issue has been submitted and will be reviewed by the
-            authorities.
+            authorities. You will see your report count updated in the leaderboard.
           </p>
-          <div className="bg-green-100 border border-green-300 text-green-700 px-4 py-2 rounded">
-            Report ID: CR-{Date.now().toString().slice(-6)}
-          </div>
         </div>
       </div>
     );
@@ -171,6 +212,12 @@ function ReportIssuePage() {
         </h3>
 
         <form onSubmit={handleSubmit} className="space-y-6">
+          {errorMessage && (
+            <div className="bg-red-50 border-2 border-red-200 text-red-700 px-4 py-3 rounded-md">
+              <p className="font-semibold">❌ {errorMessage}</p>
+            </div>
+          )}
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium mb-2">
@@ -344,48 +391,39 @@ function ReportIssuePage() {
 
 // Leaderboard Page
 function LeaderboardPage() {
-  const leaderboard = [
-    {
-      rank: 1,
-      name: "Priya Sharma",
-      points: 2847,
-      reports: 47,
-      resolved: 38,
-      level: "Civic Champion",
-    },
-    {
-      rank: 2,
-      name: "Rajesh Kumar",
-      points: 2156,
-      reports: 35,
-      resolved: 29,
-      level: "Community Hero",
-    },
-    {
-      rank: 3,
-      name: "Anita Desai",
-      points: 1934,
-      reports: 32,
-      resolved: 25,
-      level: "Civic Warrior",
-    },
-    {
-      rank: 4,
-      name: "Vikram Singh",
-      points: 1567,
-      reports: 28,
-      resolved: 22,
-      level: "Civic Guardian",
-    },
-    {
-      rank: 5,
-      name: "Meera Patel",
-      points: 1342,
-      reports: 24,
-      resolved: 19,
-      level: "Active Citizen",
-    },
-  ];
+  const [userPoints, setUserPoints] = useState<any[]>([]);
+  const [issues, setIssues] = useState<any[]>([]);
+
+  useEffect(() => {
+    const points = getAllUserPoints();
+    const allIssues = getAllIssues();
+    setUserPoints(points);
+    setIssues(allIssues);
+  }, []);
+
+  const getLevelName = (points: number) => {
+    if (points >= 2500) return "Civic Champion";
+    if (points >= 2000) return "Community Hero";
+    if (points >= 1500) return "Civic Warrior";
+    if (points >= 1000) return "Civic Guardian";
+    return "Active Citizen";
+  };
+
+  const leaderboard = userPoints
+    .slice(0, 5)
+    .map((user, index) => ({
+      rank: index + 1,
+      name: user.name,
+      points: user.points,
+      reports: user.reportCount,
+      resolved: user.resolvedCount,
+      level: getLevelName(user.points),
+    }));
+
+  const totalIssues = issues.length;
+  const resolvedCount = issues.filter((i) => i.status === "resolved").length;
+  const resolutionRate =
+    totalIssues > 0 ? Math.round((resolvedCount / totalIssues) * 100) : 0;
 
   return (
     <div className="container max-w-6xl mx-auto px-4 py-8">
@@ -401,19 +439,27 @@ function LeaderboardPage() {
       {/* Stats */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
         <div className="bg-white border rounded-lg p-6 text-center shadow-sm">
-          <div className="text-3xl font-bold text-blue-600 mb-2">1,247</div>
+          <div className="text-3xl font-bold text-blue-600 mb-2">
+            {userPoints.length}
+          </div>
           <div className="text-sm text-gray-600">Active Citizens</div>
         </div>
         <div className="bg-white border rounded-lg p-6 text-center shadow-sm">
-          <div className="text-3xl font-bold text-green-600 mb-2">3,891</div>
+          <div className="text-3xl font-bold text-green-600 mb-2">
+            {totalIssues}
+          </div>
           <div className="text-sm text-gray-600">Issues Reported</div>
         </div>
         <div className="bg-white border rounded-lg p-6 text-center shadow-sm">
-          <div className="text-3xl font-bold text-orange-500 mb-2">2,654</div>
+          <div className="text-3xl font-bold text-orange-500 mb-2">
+            {resolvedCount}
+          </div>
           <div className="text-sm text-gray-600">Issues Resolved</div>
         </div>
         <div className="bg-white border rounded-lg p-6 text-center shadow-sm">
-          <div className="text-3xl font-bold text-purple-600 mb-2">68%</div>
+          <div className="text-3xl font-bold text-purple-600 mb-2">
+            {resolutionRate}%
+          </div>
           <div className="text-sm text-gray-600">Resolution Rate</div>
         </div>
       </div>
@@ -563,50 +609,34 @@ function LeaderboardPage() {
 
 // Social/Community Page
 function SocialPage() {
-  const reports = [
-    {
-      id: "CR-001234",
-      title: "Pothole on Main Street causing traffic issues",
-      description: "Large pothole near intersection creating safety hazards.",
-      category: "Road & Infrastructure",
-      location: "Main Street & Park Avenue",
-      reportedBy: "Priya Sharma",
-      reportedAt: "2024-01-15",
-      status: "resolved",
-      beforeImage: "🕳️ Large pothole visible",
-      afterImage: "✅ Road repaired and resurfaced",
-      likes: 24,
-      comments: 8,
-      resolution:
-        "Road surface repaired and resurfaced. Thank you for reporting!",
-    },
-    {
-      id: "CR-001235",
-      title: "Overflowing garbage bin in residential area",
-      description: "Waste scattered around creating unsanitary conditions.",
-      category: "Waste Management",
-      location: "Residential Complex, Block A",
-      reportedBy: "Rajesh Kumar",
-      reportedAt: "2024-01-16",
-      status: "in-progress",
-      beforeImage: "🗑️ Overflowing waste bin",
-      likes: 15,
-      comments: 5,
-    },
-    {
-      id: "CR-001236",
-      title: "Street light not working - safety concern",
-      description: "Dark area at night posing safety risks for pedestrians.",
-      category: "Street Lighting",
-      location: "Elm Street, Pole #47",
-      reportedBy: "Anita Desai",
-      reportedAt: "2024-01-17",
-      status: "reported",
-      beforeImage: "💡 Dark street at night",
-      likes: 18,
-      comments: 12,
-    },
-  ];
+  const [reports, setReports] = useState<any[]>([]);
+
+  useEffect(() => {
+    const allIssues = getAllIssues();
+    // Sort by date descending
+    const sorted = allIssues.sort(
+      (a, b) =>
+        new Date(b.submittedAt).getTime() - new Date(a.submittedAt).getTime()
+    );
+    setReports(sorted);
+  }, []);
+
+  const getCategoryEmoji = (category: string) => {
+    switch (category) {
+      case "Road & Infrastructure":
+        return "🛣️";
+      case "Waste Management":
+        return "🗑️";
+      case "Water Supply":
+        return "💧";
+      case "Street Lighting":
+        return "💡";
+      case "Public Safety":
+        return "🛡️";
+      default:
+        return "📍";
+    }
+  };
 
   return (
     <div className="container max-w-4xl mx-auto px-4 py-8">
@@ -620,141 +650,138 @@ function SocialPage() {
       </div>
 
       <div className="space-y-6">
-        {reports.map((report) => (
-          <div
-            key={report.id}
-            className="border rounded-lg bg-white shadow-sm hover:shadow-md transition-shadow"
-          >
-            <div className="p-6">
-              {/* Header */}
-              <div className="flex items-start justify-between mb-4">
-                <div className="flex items-center space-x-3">
-                  <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
-                    <span className="font-semibold text-blue-600">
-                      {report.reportedBy
-                        .split(" ")
-                        .map((n) => n[0])
-                        .join("")}
-                    </span>
-                  </div>
-                  <div>
-                    <p className="font-semibold">{report.reportedBy}</p>
-                    <div className="flex items-center space-x-2 text-sm text-gray-500">
-                      <span>📅 {report.reportedAt}</span>
-                      <span>📍 {report.location}</span>
+        {reports.length === 0 ? (
+          <div className="text-center py-12 bg-white border rounded-lg">
+            <p className="text-lg text-gray-500 mb-2">No issues reported yet</p>
+            <p className="text-sm text-gray-400">
+              When community members report issues, they will appear here
+            </p>
+          </div>
+        ) : (
+          reports.map((report) => (
+            <div
+              key={report.id}
+              className="border rounded-lg bg-white shadow-sm hover:shadow-md transition-shadow"
+            >
+              <div className="p-6">
+                {/* Header */}
+                <div className="flex items-start justify-between mb-4">
+                  <div className="flex items-center space-x-3">
+                    <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+                      <span className="font-semibold text-blue-600">
+                        {report.name
+                          .split(" ")
+                          .map((n: string) => n[0])
+                          .join("")}
+                      </span>
+                    </div>
+                    <div>
+                      <p className="font-semibold">{report.name}</p>
+                      <div className="flex items-center space-x-2 text-sm text-gray-500">
+                        <span>📅 {new Date(report.submittedAt).toLocaleDateString()}</span>
+                        <span>📍 {report.location || "Location not specified"}</span>
+                      </div>
                     </div>
                   </div>
-                </div>
-                <div
-                  className={`px-3 py-1 rounded-full text-sm font-medium ${
-                    report.status === "resolved"
-                      ? "bg-green-100 text-green-800"
+                  <div
+                    className={`px-3 py-1 rounded-full text-sm font-medium ${
+                      report.status === "resolved"
+                        ? "bg-green-100 text-green-800"
+                        : report.status === "in-progress"
+                          ? "bg-orange-100 text-orange-800"
+                          : "bg-blue-100 text-blue-800"
+                    }`}
+                  >
+                    {report.status === "resolved"
+                      ? "✅ RESOLVED"
                       : report.status === "in-progress"
-                        ? "bg-orange-100 text-orange-800"
-                        : "bg-blue-100 text-blue-800"
-                  }`}
-                >
-                  {report.status === "resolved"
-                    ? "✅ RESOLVED"
-                    : report.status === "in-progress"
-                      ? "⏳ IN PROGRESS"
-                      : "🔔 REPORTED"}
-                </div>
-              </div>
-
-              {/* Content */}
-              <div className="mb-4">
-                <h3 className="font-semibold text-lg mb-2">{report.title}</h3>
-                <p className="text-gray-600 mb-3">{report.description}</p>
-                <div className="text-xs px-2 py-1 bg-gray-100 rounded inline-block">
-                  {report.category}
-                </div>
-              </div>
-
-              {/* Before/After */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                <div>
-                  <p className="text-sm font-medium mb-2 text-red-600">
-                    Before
-                  </p>
-                  <div className="w-full h-32 bg-gray-100 rounded-lg border flex items-center justify-center text-2xl">
-                    {report.beforeImage}
+                        ? "⏳ IN PROGRESS"
+                        : "🔔 REPORTED"}
                   </div>
                 </div>
-                {report.afterImage ? (
+
+                {/* Content */}
+                <div className="mb-4">
+                  <h3 className="font-semibold text-lg mb-2">{report.title}</h3>
+                  <p className="text-gray-600 mb-3">{report.description}</p>
+                  <div className="text-xs px-2 py-1 bg-gray-100 rounded inline-block">
+                    {getCategoryEmoji(report.category)} {report.category}
+                  </div>
+                </div>
+
+                {/* Issue Details */}
+                <div className="bg-gray-50 p-4 rounded-lg mb-4 grid grid-cols-2 gap-4 text-sm">
                   <div>
-                    <p className="text-sm font-medium mb-2 text-green-600">
-                      After
-                    </p>
-                    <div className="w-full h-32 bg-green-50 rounded-lg border flex items-center justify-center text-2xl">
-                      {report.afterImage}
-                    </div>
+                    <p className="text-gray-600">Issue ID</p>
+                    <p className="font-mono text-gray-800">{report.id}</p>
                   </div>
-                ) : (
-                  <div className="flex items-center justify-center h-32 border-2 border-dashed border-gray-300 rounded-lg">
-                    <div className="text-center">
-                      <div className="text-2xl mb-1">👀</div>
-                      <p className="text-sm text-gray-500">
-                        Awaiting resolution
-                      </p>
+                  <div>
+                    <p className="text-gray-600">DIGIPIN</p>
+                    <p className="font-mono text-gray-800">{report.digiPin}</p>
+                  </div>
+                </div>
+
+                {/* Admin Notes */}
+                {report.adminNotes && (
+                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
+                    <div className="flex items-center space-x-2 mb-2">
+                      <span className="text-blue-700 font-medium">
+                        📝 Admin Update
+                      </span>
                     </div>
+                    <p className="text-sm text-blue-700">{report.adminNotes}</p>
                   </div>
                 )}
-              </div>
 
-              {/* Resolution */}
-              {report.resolution && (
-                <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-4">
-                  <div className="flex items-center space-x-2 mb-2">
-                    <span className="text-green-700 font-medium">
-                      ✅ Resolved by Municipal Corporation
-                    </span>
+                {/* Actions */}
+                <div className="flex items-center justify-between pt-4 border-t">
+                  <div className="flex items-center space-x-4">
+                    <button className="flex items-center space-x-2 text-gray-500 hover:text-red-500">
+                      <span>❤️</span>
+                      <span>0</span>
+                    </button>
+                    <button className="flex items-center space-x-2 text-gray-500 hover:text-blue-500">
+                      <span>💬</span>
+                      <span>0</span>
+                    </button>
+                    <button className="flex items-center space-x-2 text-gray-500 hover:text-green-500">
+                      <span>📤</span>
+                      <span>Share</span>
+                    </button>
                   </div>
-                  <p className="text-sm text-green-700">{report.resolution}</p>
                 </div>
-              )}
-
-              {/* Actions */}
-              <div className="flex items-center justify-between pt-4 border-t">
-                <div className="flex items-center space-x-4">
-                  <button className="flex items-center space-x-2 text-gray-500 hover:text-red-500">
-                    <span>❤️</span>
-                    <span>{report.likes}</span>
-                  </button>
-                  <button className="flex items-center space-x-2 text-gray-500 hover:text-blue-500">
-                    <span>💬</span>
-                    <span>{report.comments}</span>
-                  </button>
-                  <button className="flex items-center space-x-2 text-gray-500 hover:text-green-500">
-                    <span>📤</span>
-                    <span>Share</span>
-                  </button>
-                </div>
-                <div className="text-sm text-gray-500">ID: {report.id}</div>
               </div>
             </div>
-          </div>
-        ))}
+          ))
+        )}
       </div>
     </div>
   );
 }
 
-// Login Page
-function LoginPage() {
-  const [loginType, setLoginType] = useState<"user" | "admin">("user");
+// Admin Login Page
+function AdminLoginPage({
+  onLoginSuccess,
+  onCancel,
+}: {
+  onLoginSuccess: () => void;
+  onCancel: () => void;
+}) {
   const [formData, setFormData] = useState({
-    email: "",
+    username: "",
     password: "",
-    adminCode: "",
   });
+  const [error, setError] = useState("");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log(`${loginType} login:`, formData);
-    alert(
-      `${loginType} login functionality will be connected to your backend API`,
-    );
+    setError("");
+
+    if (validateAdminLogin(formData.username, formData.password)) {
+      onLoginSuccess();
+    } else {
+      setError("Invalid username or password");
+    }
   };
 
   return (
@@ -763,63 +790,44 @@ function LoginPage() {
         <div className="text-center mb-8">
           <div className="flex justify-center mb-4">
             <div className="h-16 w-16 rounded-2xl bg-gradient-to-br from-blue-500 to-green-500 flex items-center justify-center text-white text-2xl">
-              📍
+              🛡️
             </div>
           </div>
           <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-green-600 bg-clip-text text-transparent">
             CivicWatch
           </h1>
-          <p className="text-gray-600 mt-2">
-            Join the community making cities better
-          </p>
+          <p className="text-gray-600 mt-2">Admin Portal Access</p>
         </div>
 
         <div className="border rounded-lg bg-white shadow-sm">
           <div className="p-6 text-center border-b">
-            <h2 className="text-xl font-semibold">Welcome Back</h2>
-            <p className="text-gray-600">Choose your login type to continue</p>
+            <h2 className="text-xl font-semibold">Admin Login</h2>
+            <p className="text-gray-600 text-sm">
+              Authorized personnel only
+            </p>
           </div>
 
           <div className="p-6">
-            {/* Login Type Selector */}
-            <div className="flex mb-6 bg-gray-100 p-1 rounded-lg">
-              <button
-                onClick={() => setLoginType("user")}
-                className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-md transition-colors ${
-                  loginType === "user"
-                    ? "bg-white text-gray-900 shadow-sm"
-                    : "text-gray-600 hover:text-gray-900"
-                }`}
-              >
-                <span>👤</span>
-                Citizen
-              </button>
-              <button
-                onClick={() => setLoginType("admin")}
-                className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-md transition-colors ${
-                  loginType === "admin"
-                    ? "bg-white text-gray-900 shadow-sm"
-                    : "text-gray-600 hover:text-gray-900"
-                }`}
-              >
-                <span>🛡️</span>
-                Admin
-              </button>
-            </div>
+            {error && (
+              <div className="mb-4 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md">
+                {error}
+              </div>
+            )}
 
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
                 <label className="block text-sm font-medium mb-2">
-                  {loginType === "admin" ? "Admin Email" : "Email"}
+                  Username
                 </label>
                 <input
-                  type="email"
-                  placeholder={
-                    loginType === "admin" ? "admin@civic.gov" : "your@email.com"
-                  }
-                  value={formData.email}
+                  type="text"
+                  placeholder="Enter admin username"
+                  value={formData.username}
                   onChange={(e) =>
-                    setFormData((prev) => ({ ...prev, email: e.target.value }))
+                    setFormData((prev) => ({
+                      ...prev,
+                      username: e.target.value,
+                    }))
                   }
                   className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   required
@@ -832,11 +840,7 @@ function LoginPage() {
                 </label>
                 <input
                   type="password"
-                  placeholder={
-                    loginType === "admin"
-                      ? "Enter admin password"
-                      : "Enter your password"
-                  }
+                  placeholder="Enter admin password"
                   value={formData.password}
                   onChange={(e) =>
                     setFormData((prev) => ({
@@ -849,49 +853,27 @@ function LoginPage() {
                 />
               </div>
 
-              {loginType === "admin" && (
-                <div>
-                  <label className="block text-sm font-medium mb-2">
-                    Admin Access Code
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="Enter admin access code"
-                    value={formData.adminCode}
-                    onChange={(e) =>
-                      setFormData((prev) => ({
-                        ...prev,
-                        adminCode: e.target.value,
-                      }))
-                    }
-                    className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                    required
-                  />
-                </div>
-              )}
+              <div className="bg-blue-50 border border-blue-200 rounded-md p-3 text-sm text-blue-700">
+                <p className="font-medium mb-1">Default Credentials:</p>
+                <p>Username: <span className="font-mono">admin</span></p>
+                <p>Password: <span className="font-mono">admin123</span></p>
+              </div>
 
               <button
                 type="submit"
-                className={`w-full text-white font-semibold py-3 px-6 rounded-md transition-colors ${
-                  loginType === "admin"
-                    ? "bg-green-500 hover:bg-green-600"
-                    : "bg-blue-500 hover:bg-blue-600"
-                }`}
+                className="w-full text-white font-semibold py-3 px-6 rounded-md bg-green-500 hover:bg-green-600 transition-colors"
               >
-                Sign In as {loginType === "admin" ? "Admin" : "Citizen"}
+                Login as Admin
+              </button>
+
+              <button
+                type="button"
+                onClick={onCancel}
+                className="w-full text-gray-700 font-semibold py-3 px-6 rounded-md border border-gray-300 hover:bg-gray-50 transition-colors"
+              >
+                Cancel
               </button>
             </form>
-
-            {loginType === "user" && (
-              <div className="text-center mt-4">
-                <p className="text-sm text-gray-600">
-                  Don't have an account?{" "}
-                  <button className="text-blue-600 hover:underline">
-                    Sign up
-                  </button>
-                </p>
-              </div>
-            )}
           </div>
         </div>
       </div>
@@ -902,8 +884,30 @@ function LoginPage() {
 // Main App Component
 function App() {
   const [currentPage, setCurrentPage] = useState("report");
+  const [isAdminLoggedIn, setIsAdminLoggedIn] = useState(false);
+  const [showAdminLogin, setShowAdminLogin] = useState(false);
+
+  useEffect(() => {
+    // Initialize data on app load
+    initializeData();
+  }, []);
+
+  const handleAdminLoginSuccess = () => {
+    setIsAdminLoggedIn(true);
+    setShowAdminLogin(false);
+    setCurrentPage("admin");
+  };
+
+  const handleAdminLogout = () => {
+    setIsAdminLoggedIn(false);
+    setCurrentPage("report");
+  };
 
   const renderPage = () => {
+    if (isAdminLoggedIn && currentPage === "admin") {
+      return <AdminDashboard onLogout={handleAdminLogout} />;
+    }
+
     switch (currentPage) {
       case "report":
         return <ReportIssuePage />;
@@ -911,20 +915,44 @@ function App() {
         return <LeaderboardPage />;
       case "social":
         return <SocialPage />;
-      case "login":
-        return <LoginPage />;
       default:
         return <ReportIssuePage />;
     }
   };
 
-  if (currentPage === "login") {
-    return <LoginPage />;
+  if (showAdminLogin) {
+    return (
+      <AdminLoginPage
+        onLoginSuccess={handleAdminLoginSuccess}
+        onCancel={() => setShowAdminLogin(false)}
+      />
+    );
   }
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Navigation currentPage={currentPage} setCurrentPage={setCurrentPage} />
+      <Navigation
+        currentPage={currentPage}
+        setCurrentPage={setCurrentPage}
+        isAdminLoggedIn={isAdminLoggedIn}
+        onAdminLogin={() => setShowAdminLogin(true)}
+      />
+      {isAdminLoggedIn && (
+        <div className="sticky top-16 z-40 bg-green-50 border-b border-green-200 px-4 py-2">
+          <div className="container mx-auto">
+            <button
+              onClick={() => setCurrentPage("admin")}
+              className={`px-4 py-2 rounded-md transition-colors ${
+                currentPage === "admin"
+                  ? "bg-green-500 text-white"
+                  : "text-green-700 hover:bg-green-100"
+              }`}
+            >
+              🛡️ Admin Dashboard
+            </button>
+          </div>
+        </div>
+      )}
       <main>{renderPage()}</main>
       <footer className="border-t bg-white mt-16">
         <div className="container mx-auto px-4 py-8 text-center">
