@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import { AdminDashboard } from "./pages/AdminDashboard";
 import { CommunityPostsPage } from "./pages/CommunityPosts";
+import { LandingPage } from "./pages/LandingPage";
+import { ChatBot } from "./components/ChatBot";
 import {
   initializeData,
   validateAdminLogin,
@@ -25,12 +27,14 @@ function Navigation({
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-white shadow-sm">
       <div className="container mx-auto flex h-16 items-center px-4">
-        <div className="mr-6 flex items-center space-x-2">
-          <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-blue-500 to-green-500 flex items-center justify-center text-white text-sm">
-            📍
-          </div>
+        <div className="mr-6 flex items-center space-x-2 cursor-pointer" onClick={() => setCurrentPage("landing")}>
+          <img
+            src="https://cdn.builder.io/api/v1/image/assets%2F2542bca302a146b68a7921bd85ab85d4%2Fab70fd72d1044bf2a05c7554f94faeca?format=webp&width=800&height=1200"
+            alt="FixMyCity Logo"
+            className="h-8 w-8"
+          />
           <span className="font-bold text-xl bg-gradient-to-r from-blue-600 to-green-600 bg-clip-text text-transparent">
-            CivicWatch
+            FixMyCity
           </span>
         </div>
 
@@ -366,7 +370,7 @@ function ReportIssuePage() {
               <label className="block text-sm font-medium mb-2">
                 DIGIPIN * (Mandatory)
               </label>
-              <div className="flex gap-2">
+              <div className="flex gap-2 items-center">
                 <input
                   type="text"
                   placeholder="Enter your DIGIPIN"
@@ -381,9 +385,10 @@ function ReportIssuePage() {
                   href="https://dac.indiapost.gov.in/mydigipin/home"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="px-4 py-3 bg-blue-500 text-white rounded-md hover:bg-blue-600 whitespace-nowrap font-medium text-sm"
+                  className="px-2 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 whitespace-nowrap font-medium text-xs"
+                  title="Know Your DIGIPIN"
                 >
-                  🔗 Know DIGIPIN
+                  🔗
                 </a>
               </div>
               <p className="text-xs text-blue-600 mt-1">
@@ -919,12 +924,14 @@ function AdminLoginPage({
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
           <div className="flex justify-center mb-4">
-            <div className="h-16 w-16 rounded-2xl bg-gradient-to-br from-blue-500 to-green-500 flex items-center justify-center text-white text-2xl">
-              🛡️
-            </div>
+            <img
+              src="https://cdn.builder.io/api/v1/image/assets%2F2542bca302a146b68a7921bd85ab85d4%2Fab70fd72d1044bf2a05c7554f94faeca?format=webp&width=800&height=1200"
+              alt="FixMyCity Logo"
+              className="h-16 w-16 rounded-lg shadow-lg"
+            />
           </div>
           <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-green-600 bg-clip-text text-transparent">
-            CivicWatch
+            FixMyCity
           </h1>
           <p className="text-gray-600 mt-2">Admin Portal Access</p>
         </div>
@@ -1013,7 +1020,7 @@ function AdminLoginPage({
 
 // Main App Component
 function App() {
-  const [currentPage, setCurrentPage] = useState("report");
+  const [currentPage, setCurrentPage] = useState("landing");
   const [isAdminLoggedIn, setIsAdminLoggedIn] = useState(false);
   const [showAdminLogin, setShowAdminLogin] = useState(false);
 
@@ -1039,6 +1046,10 @@ function App() {
     }
 
     switch (currentPage) {
+      case "landing":
+        return (
+          <LandingPage onGetStarted={() => setCurrentPage("report")} />
+        );
       case "report":
         return <ReportIssuePage />;
       case "leaderboard":
@@ -1048,7 +1059,7 @@ function App() {
       case "community-posts":
         return <CommunityPostsPage />;
       default:
-        return <ReportIssuePage />;
+        return <LandingPage onGetStarted={() => setCurrentPage("report")} />;
     }
   };
 
@@ -1063,44 +1074,53 @@ function App() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Navigation
-        currentPage={currentPage}
-        setCurrentPage={setCurrentPage}
-        isAdminLoggedIn={isAdminLoggedIn}
-        onAdminLogin={() => setShowAdminLogin(true)}
-      />
-      {isAdminLoggedIn && (
-        <div className="sticky top-16 z-40 bg-green-50 border-b border-green-200 px-4 py-2">
-          <div className="container mx-auto">
-            <button
-              onClick={() => setCurrentPage("admin")}
-              className={`px-4 py-2 rounded-md transition-colors ${
-                currentPage === "admin"
-                  ? "bg-green-500 text-white"
-                  : "text-green-700 hover:bg-green-100"
-              }`}
-            >
-              🛡️ Admin Dashboard
-            </button>
-          </div>
-        </div>
+      {currentPage !== "landing" && (
+        <>
+          <Navigation
+            currentPage={currentPage}
+            setCurrentPage={setCurrentPage}
+            isAdminLoggedIn={isAdminLoggedIn}
+            onAdminLogin={() => setShowAdminLogin(true)}
+          />
+          {isAdminLoggedIn && (
+            <div className="sticky top-16 z-40 bg-green-50 border-b border-green-200 px-4 py-2">
+              <div className="container mx-auto">
+                <button
+                  onClick={() => setCurrentPage("admin")}
+                  className={`px-4 py-2 rounded-md transition-colors ${
+                    currentPage === "admin"
+                      ? "bg-green-500 text-white"
+                      : "text-green-700 hover:bg-green-100"
+                  }`}
+                >
+                  🛡️ Admin Dashboard
+                </button>
+              </div>
+            </div>
+          )}
+        </>
       )}
       <main>{renderPage()}</main>
-      <footer className="border-t bg-white mt-16">
-        <div className="container mx-auto px-4 py-8 text-center">
-          <div className="flex items-center justify-center mb-2">
-            <div className="h-6 w-6 rounded bg-gradient-to-br from-blue-500 to-green-500 flex items-center justify-center text-white text-sm mr-2">
-              📍
+      {currentPage !== "landing" && (
+        <footer className="border-t bg-white mt-16">
+          <div className="container mx-auto px-4 py-8 text-center">
+            <div className="flex items-center justify-center mb-2">
+              <img
+                src="https://cdn.builder.io/api/v1/image/assets%2F2542bca302a146b68a7921bd85ab85d4%2Fab70fd72d1044bf2a05c7554f94faeca?format=webp&width=800&height=1200"
+                alt="FixMyCity Logo"
+                className="h-6 w-6 mr-2"
+              />
+              <span className="font-medium">
+                Built for responsible citizens, by the community.
+              </span>
             </div>
-            <span className="font-medium">
-              Built for responsible citizens, by the community.
-            </span>
+            <p className="text-sm text-gray-500">
+              © 2024 FixMyCity. Making communities better, one report at a time.
+            </p>
           </div>
-          <p className="text-sm text-gray-500">
-            © 2024 CivicWatch. Making communities better, one report at a time.
-          </p>
-        </div>
-      </footer>
+        </footer>
+      )}
+      {currentPage !== "landing" && <ChatBot />}
     </div>
   );
 }
