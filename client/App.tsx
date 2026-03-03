@@ -27,15 +27,12 @@ function Navigation({
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-white shadow-sm">
       <div className="container mx-auto flex h-16 items-center px-4">
-        <div className="mr-6 flex items-center space-x-3 cursor-pointer" onClick={() => setCurrentPage("landing")}>
+        <div className="mr-6 cursor-pointer" onClick={() => setCurrentPage("landing")}>
           <img
             src="https://cdn.builder.io/api/v1/image/assets%2F2542bca302a146b68a7921bd85ab85d4%2Fc53f8a9f5c1e4be9868402b13def526f?format=webp&width=800&height=1200"
             alt="FixMyCity Logo"
             className="h-10 w-auto"
           />
-          <span className="font-bold text-lg bg-gradient-to-r from-blue-600 to-green-600 bg-clip-text text-transparent">
-            FixMyCity
-          </span>
         </div>
 
         <nav className="flex space-x-6 overflow-x-auto">
@@ -923,17 +920,14 @@ function AdminLoginPage({
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-white to-green-50 p-4">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <div className="flex justify-center mb-6">
+          <div className="flex justify-center mb-4">
             <img
               src="https://cdn.builder.io/api/v1/image/assets%2F2542bca302a146b68a7921bd85ab85d4%2Fc53f8a9f5c1e4be9868402b13def526f?format=webp&width=800&height=1200"
               alt="FixMyCity Logo"
-              className="h-20 w-auto"
+              className="h-24 w-auto"
             />
           </div>
-          <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-green-600 bg-clip-text text-transparent">
-            FixMyCity
-          </h1>
-          <p className="text-gray-600 mt-2">Admin Portal Access</p>
+          <p className="text-gray-600 mt-4">Admin Portal Access</p>
         </div>
 
         <div className="border rounded-lg bg-white shadow-sm">
@@ -1104,18 +1098,18 @@ function App() {
       {currentPage !== "landing" && (
         <footer className="border-t bg-white mt-16">
           <div className="container mx-auto px-4 py-8 text-center">
-            <div className="flex items-center justify-center mb-2">
+            <div className="flex items-center justify-center mb-4">
               <img
                 src="https://cdn.builder.io/api/v1/image/assets%2F2542bca302a146b68a7921bd85ab85d4%2Fc53f8a9f5c1e4be9868402b13def526f?format=webp&width=800&height=1200"
                 alt="FixMyCity Logo"
-                className="h-7 w-auto mr-2"
+                className="h-8 w-auto"
               />
-              <span className="font-medium">
-                Built for responsible citizens, by the community.
-              </span>
             </div>
+            <p className="text-sm text-gray-600 mb-2">
+              Built for responsible citizens, by the community.
+            </p>
             <p className="text-sm text-gray-500">
-              © 2024 FixMyCity. Making communities better, one report at a time.
+              © 2024. Making communities better, one report at a time.
             </p>
           </div>
         </footer>

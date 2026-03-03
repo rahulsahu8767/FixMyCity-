@@ -9,15 +9,12 @@ export function LandingPage({
       <div className="container max-w-6xl mx-auto px-4 py-16">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
           <div>
-            <div className="flex items-center gap-4 mb-6">
+            <div className="mb-6">
               <img
                 src="https://cdn.builder.io/api/v1/image/assets%2F2542bca302a146b68a7921bd85ab85d4%2Fc53f8a9f5c1e4be9868402b13def526f?format=webp&width=800&height=1200"
                 alt="FixMyCity Logo"
-                className="h-16 w-auto"
+                className="h-20 w-auto"
               />
-              <span className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-green-600 bg-clip-text text-transparent">
-                FixMyCity
-              </span>
             </div>
 
             <h1 className="text-5xl font-bold text-gray-900 mb-6 leading-tight">
@@ -271,13 +268,12 @@ export function LandingPage({
       {/* Footer */}
       <div className="border-t bg-gray-50 py-8">
         <div className="container max-w-6xl mx-auto px-4 text-center text-gray-600">
-          <div className="flex items-center justify-center gap-2 mb-2">
+          <div className="flex items-center justify-center mb-4">
             <img
               src="https://cdn.builder.io/api/v1/image/assets%2F2542bca302a146b68a7921bd85ab85d4%2Fc53f8a9f5c1e4be9868402b13def526f?format=webp&width=800&height=1200"
               alt="FixMyCity Logo"
-              className="h-7 w-auto"
+              className="h-8 w-auto"
             />
-            <span className="font-semibold">FixMyCity</span>
           </div>
           <p className="text-sm">
             Making cities better, one report at a time. No signup. No politics. Just results.
