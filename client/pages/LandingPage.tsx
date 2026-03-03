@@ -9,11 +9,11 @@ export function LandingPage({
       <div className="container max-w-6xl mx-auto px-4 py-16">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
           <div>
-            <div className="flex items-center gap-3 mb-6">
+            <div className="flex items-center gap-4 mb-6">
               <img
-                src="https://cdn.builder.io/api/v1/image/assets%2F2542bca302a146b68a7921bd85ab85d4%2Fab70fd72d1044bf2a05c7554f94faeca?format=webp&width=800&height=1200"
+                src="https://cdn.builder.io/api/v1/image/assets%2F2542bca302a146b68a7921bd85ab85d4%2Fc53f8a9f5c1e4be9868402b13def526f?format=webp&width=800&height=1200"
                 alt="FixMyCity Logo"
-                className="h-12 w-12 shadow-lg rounded"
+                className="h-16 w-auto"
               />
               <span className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-green-600 bg-clip-text text-transparent">
                 FixMyCity
@@ -273,9 +273,9 @@ export function LandingPage({
         <div className="container max-w-6xl mx-auto px-4 text-center text-gray-600">
           <div className="flex items-center justify-center gap-2 mb-2">
             <img
-              src="https://cdn.builder.io/api/v1/image/assets%2F2542bca302a146b68a7921bd85ab85d4%2Fab70fd72d1044bf2a05c7554f94faeca?format=webp&width=800&height=1200"
+              src="https://cdn.builder.io/api/v1/image/assets%2F2542bca302a146b68a7921bd85ab85d4%2Fc53f8a9f5c1e4be9868402b13def526f?format=webp&width=800&height=1200"
               alt="FixMyCity Logo"
-              className="h-6 w-6"
+              className="h-7 w-auto"
             />
             <span className="font-semibold">FixMyCity</span>
           </div>

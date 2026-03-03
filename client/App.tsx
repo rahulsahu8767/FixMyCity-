@@ -27,13 +27,13 @@ function Navigation({
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-white shadow-sm">
       <div className="container mx-auto flex h-16 items-center px-4">
-        <div className="mr-6 flex items-center space-x-2 cursor-pointer" onClick={() => setCurrentPage("landing")}>
+        <div className="mr-6 flex items-center space-x-3 cursor-pointer" onClick={() => setCurrentPage("landing")}>
           <img
-            src="https://cdn.builder.io/api/v1/image/assets%2F2542bca302a146b68a7921bd85ab85d4%2Fab70fd72d1044bf2a05c7554f94faeca?format=webp&width=800&height=1200"
+            src="https://cdn.builder.io/api/v1/image/assets%2F2542bca302a146b68a7921bd85ab85d4%2Fc53f8a9f5c1e4be9868402b13def526f?format=webp&width=800&height=1200"
             alt="FixMyCity Logo"
-            className="h-8 w-8"
+            className="h-10 w-auto"
           />
-          <span className="font-bold text-xl bg-gradient-to-r from-blue-600 to-green-600 bg-clip-text text-transparent">
+          <span className="font-bold text-lg bg-gradient-to-r from-blue-600 to-green-600 bg-clip-text text-transparent">
             FixMyCity
           </span>
         </div>
@@ -923,11 +923,11 @@ function AdminLoginPage({
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-white to-green-50 p-4">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <div className="flex justify-center mb-4">
+          <div className="flex justify-center mb-6">
             <img
-              src="https://cdn.builder.io/api/v1/image/assets%2F2542bca302a146b68a7921bd85ab85d4%2Fab70fd72d1044bf2a05c7554f94faeca?format=webp&width=800&height=1200"
+              src="https://cdn.builder.io/api/v1/image/assets%2F2542bca302a146b68a7921bd85ab85d4%2Fc53f8a9f5c1e4be9868402b13def526f?format=webp&width=800&height=1200"
               alt="FixMyCity Logo"
-              className="h-16 w-16 rounded-lg shadow-lg"
+              className="h-20 w-auto"
             />
           </div>
           <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-green-600 bg-clip-text text-transparent">
@@ -1106,9 +1106,9 @@ function App() {
           <div className="container mx-auto px-4 py-8 text-center">
             <div className="flex items-center justify-center mb-2">
               <img
-                src="https://cdn.builder.io/api/v1/image/assets%2F2542bca302a146b68a7921bd85ab85d4%2Fab70fd72d1044bf2a05c7554f94faeca?format=webp&width=800&height=1200"
+                src="https://cdn.builder.io/api/v1/image/assets%2F2542bca302a146b68a7921bd85ab85d4%2Fc53f8a9f5c1e4be9868402b13def526f?format=webp&width=800&height=1200"
                 alt="FixMyCity Logo"
-                className="h-6 w-6 mr-2"
+                className="h-7 w-auto mr-2"
               />
               <span className="font-medium">
                 Built for responsible citizens, by the community.
