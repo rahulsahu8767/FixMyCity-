@@ -24,11 +24,12 @@ export default async function handler(req: any, res: any) {
 async function handleGetIssues(req: any, res: any) {
   try {
     const { id } = req.query;
-    const issuesCollection = await getCollection('issues');
+
+    const issuesCollection: any = await getCollection('issues');
 
     if (id) {
-      // Get single issue
       let issue;
+
       try {
         issue = await issuesCollection.findOne({ _id: new ObjectId(id) });
       } catch {
@@ -38,15 +39,16 @@ async function handleGetIssues(req: any, res: any) {
       if (!issue) {
         return sendResponse(res, 404, null, 'Issue not found');
       }
+
       return sendResponse(res, 200, issue);
-    } else {
-      // Get all issues
-      const issues = await issuesCollection
-        .find({})
-        .sort({ submittedAt: -1 })
-        .toArray();
-      return sendResponse(res, 200, issues);
     }
+
+    const issues = await issuesCollection
+      .find({})
+      .sort({ submittedAt: -1 })
+      .toArray();
+
+    return sendResponse(res, 200, issues);
   } catch (error) {
     console.error('Get issues error:', error);
     return sendResponse(res, 500, null, 'Error fetching issues');
@@ -68,7 +70,6 @@ async function handleCreateIssue(req: any, res: any) {
       imageType,
     } = req.body;
 
-    // Validation
     if (!title || !category || !description || !digiPin || !name || !email || !contact) {
       return sendResponse(res, 400, null, 'Missing required fields');
     }
@@ -77,10 +78,9 @@ async function handleCreateIssue(req: any, res: any) {
       return sendResponse(res, 400, null, 'Invalid email format');
     }
 
-    const issuesCollection = await getCollection('issues');
-    const usersCollection = await getCollection('users');
+    const issuesCollection: any = await getCollection('issues');
+    const usersCollection: any = await getCollection('users');
 
-    // Check for duplicate
     const existingIssue = await issuesCollection.findOne({
       digiPin,
       category,
@@ -95,7 +95,6 @@ async function handleCreateIssue(req: any, res: any) {
       );
     }
 
-    // Create issue
     const newIssue = {
       id: generateIssueId(),
       title,
@@ -115,7 +114,6 @@ async function handleCreateIssue(req: any, res: any) {
 
     const issueResult = await issuesCollection.insertOne(newIssue);
 
-    // Update user points
     let user = await usersCollection.findOne({ email });
 
     if (user) {
@@ -147,7 +145,6 @@ async function handleCreateIssue(req: any, res: any) {
 
 async function handleUpdateIssueStatus(req: any, res: any) {
   try {
-    // Check admin auth
     const authHeader = req.headers.authorization;
     const adminPassword = process.env.ADMIN_PASSWORD || 'admin123';
 
@@ -156,6 +153,7 @@ async function handleUpdateIssueStatus(req: any, res: any) {
     }
 
     const token = authHeader.substring(7);
+
     if (token !== adminPassword) {
       return sendResponse(res, 401, null, 'Invalid token');
     }
@@ -171,10 +169,11 @@ async function handleUpdateIssueStatus(req: any, res: any) {
       return sendResponse(res, 400, null, 'Invalid status');
     }
 
-    const issuesCollection = await getCollection('issues');
-    const usersCollection = await getCollection('users');
+    const issuesCollection: any = await getCollection('issues');
+    const usersCollection: any = await getCollection('users');
 
     let issue;
+
     try {
       issue = await issuesCollection.findOne({ _id: new ObjectId(id) });
     } catch {
@@ -187,34 +186,37 @@ async function handleUpdateIssueStatus(req: any, res: any) {
 
     const previousStatus = issue.status;
 
-    const updateData = {
+    const updateData: any = {
       status,
       updatedAt: new Date().toISOString(),
     };
 
     if (adminNotes) {
-      Object.assign(updateData, { adminNotes });
+      updateData.adminNotes = adminNotes;
     }
 
     if (status === 'resolved' && previousStatus !== 'resolved') {
-      Object.assign(updateData, { resolvedAt: new Date().toISOString() });
+      updateData.resolvedAt = new Date().toISOString();
     }
 
     let updateResult;
+
     try {
       updateResult = await issuesCollection.updateOne(
         { _id: issue._id },
         { $set: updateData }
       );
     } catch {
-      updateResult = await issuesCollection.updateOne({ id }, { $set: updateData });
+      updateResult = await issuesCollection.updateOne(
+        { id },
+        { $set: updateData }
+      );
     }
 
     if (updateResult.matchedCount === 0) {
       return sendResponse(res, 404, null, 'Issue not found');
     }
 
-    // Add points if resolved
     if (status === 'resolved' && previousStatus !== 'resolved') {
       await usersCollection.updateOne(
         { email: issue.email },
@@ -226,6 +228,7 @@ async function handleUpdateIssueStatus(req: any, res: any) {
     }
 
     let updatedIssue;
+
     try {
       updatedIssue = await issuesCollection.findOne({ _id: issue._id });
     } catch {
@@ -241,7 +244,6 @@ async function handleUpdateIssueStatus(req: any, res: any) {
 
 async function handleDeleteIssue(req: any, res: any) {
   try {
-    // Check admin auth
     const authHeader = req.headers.authorization;
     const adminPassword = process.env.ADMIN_PASSWORD || 'admin123';
 
@@ -250,6 +252,7 @@ async function handleDeleteIssue(req: any, res: any) {
     }
 
     const token = authHeader.substring(7);
+
     if (token !== adminPassword) {
       return sendResponse(res, 401, null, 'Invalid token');
     }
@@ -260,9 +263,10 @@ async function handleDeleteIssue(req: any, res: any) {
       return sendResponse(res, 400, null, 'Issue ID required');
     }
 
-    const issuesCollection = await getCollection('issues');
+    const issuesCollection: any = await getCollection('issues');
 
     let result;
+
     try {
       result = await issuesCollection.deleteOne({ _id: new ObjectId(id) });
     } catch {
