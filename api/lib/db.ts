@@ -16,14 +16,10 @@ export async function connectToDatabase() {
     await client.connect();
     
     const db = client.db(DB_NAME);
-    
-    // Verify connection
     await db.admin().ping();
     
     cachedClient = client;
     cachedDb = db;
-    
-    console.log('Connected to MongoDB successfully');
     
     return { client, db };
   } catch (error) {
@@ -40,12 +36,4 @@ export async function getDatabase(): Promise<Db> {
 export async function getCollection<T>(collectionName: string): Promise<Collection<T>> {
   const db = await getDatabase();
   return db.collection<T>(collectionName);
-}
-
-export async function closeDatabase() {
-  if (cachedClient) {
-    await cachedClient.close();
-    cachedClient = null;
-    cachedDb = null;
-  }
 }
