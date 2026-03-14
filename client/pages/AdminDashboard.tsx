@@ -1,12 +1,29 @@
 import { useState, useEffect } from "react";
 import {
-  getAllIssues,
-  updateIssue,
+  getAdminIssues,
+  adminUpdateIssueStatus,
   deleteIssue,
-  CivicIssue,
-  getAdminCredentials,
-  updateAdminCredentials,
-} from "../lib/dataManager";
+  logout,
+} from "../lib/apiClient";
+
+interface CivicIssue {
+  _id?: string;
+  id: string;
+  title: string;
+  category: string;
+  description: string;
+  digiPin: string;
+  location: string;
+  name: string;
+  email: string;
+  contact: string;
+  status: "reported" | "in-progress" | "resolved";
+  submittedAt: string;
+  resolvedAt?: string;
+  adminNotes?: string;
+  imageData?: string;
+  imageType?: string;
+}
 
 export function AdminDashboard({ onLogout }: { onLogout: () => void }) {
   const [issues, setIssues] = useState<CivicIssue[]>([]);
@@ -16,6 +33,7 @@ export function AdminDashboard({ onLogout }: { onLogout: () => void }) {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editData, setEditData] = useState<Partial<CivicIssue>>({});
   const [showCredentialModal, setShowCredentialModal] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [newCredentials, setNewCredentials] = useState({
     username: "",
     password: "",
@@ -42,9 +60,19 @@ export function AdminDashboard({ onLogout }: { onLogout: () => void }) {
     filterIssues();
   }, [selectedCategory, selectedStatus, issues]);
 
-  const loadIssues = () => {
-    const allIssues = getAllIssues();
-    setIssues(allIssues);
+  const loadIssues = async () => {
+    try {
+      setIsLoading(true);
+      const adminToken = localStorage.getItem('adminToken');
+      const allIssues = await getAdminIssues(adminToken);
+      console.log('✅ Issues loaded from API:', allIssues.length);
+      setIssues(allIssues as CivicIssue[]);
+    } catch (error) {
+      console.error('❌ Error loading issues:', error);
+      alert('Failed to load issues. Please check your token.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const filterIssues = () => {
@@ -61,19 +89,34 @@ export function AdminDashboard({ onLogout }: { onLogout: () => void }) {
     setFilteredIssues(filtered);
   };
 
-  const handleStatusChange = (issueId: string, newStatus: string) => {
-    const updated = updateIssue(issueId, {
-      status: newStatus as "reported" | "in-progress" | "resolved",
-    });
-    if (updated) {
-      loadIssues();
+  const handleStatusChange = async (issueId: string, newStatus: string) => {
+    try {
+      const adminToken = localStorage.getItem('adminToken');
+      await adminUpdateIssueStatus(
+        issueId,
+        newStatus as "reported" | "in-progress" | "resolved",
+        undefined,
+        adminToken
+      );
+      console.log('✅ Issue status updated');
+      await loadIssues();
+    } catch (error) {
+      console.error('❌ Error updating issue status:', error);
+      alert('Failed to update issue status. Please try again.');
     }
   };
 
-  const handleDeleteIssue = (issueId: string) => {
+  const handleDeleteIssue = async (issueId: string) => {
     if (window.confirm("Are you sure you want to delete this issue?")) {
-      deleteIssue(issueId);
-      loadIssues();
+      try {
+        const adminToken = localStorage.getItem('adminToken');
+        await deleteIssue(issueId, adminToken);
+        console.log('✅ Issue deleted');
+        await loadIssues();
+      } catch (error) {
+        console.error('❌ Error deleting issue:', error);
+        alert('Failed to delete issue. Please try again.');
+      }
     }
   };
 
@@ -82,22 +125,34 @@ export function AdminDashboard({ onLogout }: { onLogout: () => void }) {
     setEditData({ ...issue });
   };
 
-  const handleSaveEdit = (issueId: string) => {
-    const updated = updateIssue(issueId, editData);
-    if (updated) {
+  const handleSaveEdit = async (issueId: string) => {
+    try {
+      const adminToken = localStorage.getItem('adminToken');
+      await adminUpdateIssueStatus(
+        issueId,
+        (editData.status as "reported" | "in-progress" | "resolved") || "reported",
+        editData.adminNotes,
+        adminToken
+      );
+      console.log('✅ Issue updated');
       setEditingId(null);
       setEditData({});
-      loadIssues();
+      await loadIssues();
+    } catch (error) {
+      console.error('❌ Error updating issue:', error);
+      alert('Failed to update issue. Please try again.');
     }
   };
 
   const handleUpdateCredentials = () => {
-    if (newCredentials.username && newCredentials.password) {
-      updateAdminCredentials(newCredentials.username, newCredentials.password);
-      alert("Admin credentials updated successfully!");
-      setShowCredentialModal(false);
-      setNewCredentials({ username: "", password: "" });
-    }
+    alert("⚠️ Credential updates must be managed through a secure admin panel in production.\n\nFor development, use the default credentials (admin / admin123).");
+    setShowCredentialModal(false);
+    setNewCredentials({ username: "", password: "" });
+  };
+
+  const handleLogout = () => {
+    logout();
+    onLogout();
   };
 
   const getStatusColor = (status: string) => {
@@ -139,13 +194,13 @@ export function AdminDashboard({ onLogout }: { onLogout: () => void }) {
         <div className="flex gap-4">
           <button
             onClick={() => setShowCredentialModal(true)}
-            className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+            className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors"
           >
             🔐 Change Credentials
           </button>
           <button
-            onClick={onLogout}
-            className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600"
+            onClick={handleLogout}
+            className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition-colors"
           >
             🚪 Logout
           </button>
@@ -218,13 +273,26 @@ export function AdminDashboard({ onLogout }: { onLogout: () => void }) {
       {/* Issues List */}
       <div className="bg-white border rounded-lg shadow-sm">
         <div className="p-6 border-b">
-          <h3 className="text-lg font-semibold">
-            Issues ({filteredIssues.length})
-          </h3>
+          <div className="flex items-center justify-between">
+            <h3 className="text-lg font-semibold">
+              Issues ({filteredIssues.length})
+            </h3>
+            <button
+              onClick={loadIssues}
+              disabled={isLoading}
+              className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 disabled:opacity-50 transition-colors"
+            >
+              {isLoading ? '⏳ Loading...' : '🔄 Refresh'}
+            </button>
+          </div>
         </div>
 
         <div className="divide-y">
-          {filteredIssues.length === 0 ? (
+          {isLoading ? (
+            <div className="p-8 text-center text-gray-500">
+              <p className="text-lg">Loading issues...</p>
+            </div>
+          ) : filteredIssues.length === 0 ? (
             <div className="p-8 text-center text-gray-500">
               <p className="text-lg">No issues found</p>
             </div>
@@ -290,7 +358,7 @@ export function AdminDashboard({ onLogout }: { onLogout: () => void }) {
                     <div className="flex gap-2">
                       <button
                         onClick={() => handleSaveEdit(issue.id)}
-                        className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600"
+                        className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 transition-colors"
                       >
                         Save
                       </button>
@@ -299,7 +367,7 @@ export function AdminDashboard({ onLogout }: { onLogout: () => void }) {
                           setEditingId(null);
                           setEditData({});
                         }}
-                        className="px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600"
+                        className="px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600 transition-colors"
                       >
                         Cancel
                       </button>
@@ -316,14 +384,12 @@ export function AdminDashboard({ onLogout }: { onLogout: () => void }) {
                         <div className="flex items-center gap-4 text-sm text-gray-600 mb-3">
                           <span>ID: {issue.id}</span>
                           <span>📅 {new Date(issue.submittedAt).toLocaleDateString()}</span>
-                          <span>
-                            <span
-                              className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(
-                                issue.status
-                              )}`}
-                            >
-                              {getStatusIcon(issue.status)} {issue.status}
-                            </span>
+                          <span
+                            className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(
+                              issue.status
+                            )}`}
+                          >
+                            {getStatusIcon(issue.status)} {issue.status}
                           </span>
                         </div>
                       </div>
@@ -387,7 +453,7 @@ export function AdminDashboard({ onLogout }: { onLogout: () => void }) {
                       </div>
                     )}
 
-                    <div className="flex gap-2 pt-4 border-t">
+                    <div className="flex gap-2 pt-4 border-t flex-wrap">
                       <select
                         value={issue.status}
                         onChange={(e) =>
@@ -401,13 +467,13 @@ export function AdminDashboard({ onLogout }: { onLogout: () => void }) {
                       </select>
                       <button
                         onClick={() => handleStartEdit(issue)}
-                        className="px-4 py-2 bg-blue-500 text-white text-sm rounded-md hover:bg-blue-600"
+                        className="px-4 py-2 bg-blue-500 text-white text-sm rounded-md hover:bg-blue-600 transition-colors"
                       >
                         ✏️ Edit
                       </button>
                       <button
                         onClick={() => handleDeleteIssue(issue.id)}
-                        className="px-4 py-2 bg-red-500 text-white text-sm rounded-md hover:bg-red-600"
+                        className="px-4 py-2 bg-red-500 text-white text-sm rounded-md hover:bg-red-600 transition-colors"
                       >
                         🗑️ Delete
                       </button>
@@ -463,7 +529,7 @@ export function AdminDashboard({ onLogout }: { onLogout: () => void }) {
               <div className="flex gap-2 pt-4">
                 <button
                   onClick={handleUpdateCredentials}
-                  className="flex-1 px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 font-medium"
+                  className="flex-1 px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 font-medium transition-colors"
                 >
                   Update
                 </button>
@@ -472,7 +538,7 @@ export function AdminDashboard({ onLogout }: { onLogout: () => void }) {
                     setShowCredentialModal(false);
                     setNewCredentials({ username: "", password: "" });
                   }}
-                  className="flex-1 px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600 font-medium"
+                  className="flex-1 px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600 font-medium transition-colors"
                 >
                   Cancel
                 </button>

@@ -3,14 +3,7 @@ import { AdminDashboard } from "./pages/AdminDashboard";
 import { CommunityPostsPage } from "./pages/CommunityPosts";
 import { LandingPage } from "./pages/LandingPage";
 import { ChatBot } from "./components/ChatBot";
-import {
-  initializeData,
-  validateAdminLogin,
-  getAllIssues,
-  getAllUserPoints,
-  isDuplicateIssue,
-  addIssue,
-} from "./lib/dataManager";
+import { createIssue, getLeaderboard } from "./lib/apiClient";
 
 // Simple Navigation Component
 function Navigation({
@@ -139,7 +132,7 @@ function ReportIssuePage() {
     reader.readAsDataURL(file);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMessage("");
 
@@ -148,56 +141,55 @@ function ReportIssuePage() {
       return;
     }
 
-    // Check for duplicate issue
-    if (isDuplicateIssue(formData.digiPin, formData.category)) {
-      setErrorMessage(
-        "An issue with this DIGIPIN and category already exists in the system. Please use a different DIGIPIN or category."
-      );
-      return;
-    }
-
     setIsSubmitting(true);
 
-    setTimeout(() => {
-      try {
-        addIssue({
-          title: formData.title,
-          category: formData.category,
-          description: formData.description,
-          digiPin: formData.digiPin,
-          location: formData.location,
-          name: formData.name,
-          email: formData.email,
-          contact: formData.contact,
-          status: "reported",
-          adminNotes: "",
-          imageData: formData.imageData,
-          imageType: formData.imageType,
-        });
+    try {
+      // Call API to create issue - server handles duplicate check
+      const result = await createIssue({
+        title: formData.title,
+        category: formData.category,
+        description: formData.description,
+        digiPin: formData.digiPin,
+        location: formData.location,
+        name: formData.name,
+        email: formData.email,
+        contact: formData.contact,
+        imageData: formData.imageData,
+        imageType: formData.imageType,
+      });
 
-        setIsSubmitting(false);
-        setSubmitted(true);
-        setTimeout(() => {
-          setSubmitted(false);
-          setFormData({
-            title: "",
-            category: "",
-            description: "",
-            digiPin: "",
-            location: "",
-            name: "",
-            email: "",
-            contact: "",
-            imageData: "",
-            imageType: "",
-          });
-        }, 3000);
-      } catch (error) {
-        setIsSubmitting(false);
-        setErrorMessage("Error submitting issue. Please try again.");
-        console.error(error);
+      console.log('🎉 Issue submitted successfully:', result);
+      setIsSubmitting(false);
+      setSubmitted(true);
+
+      // Reset form after 3 seconds
+      setTimeout(() => {
+        setSubmitted(false);
+        setFormData({
+          title: "",
+          category: "",
+          description: "",
+          digiPin: "",
+          location: "",
+          name: "",
+          email: "",
+          contact: "",
+          imageData: "",
+          imageType: "",
+        });
+      }, 3000);
+    } catch (error: any) {
+      setIsSubmitting(false);
+      // Check if error is duplicate issue (409 from server)
+      if (error.message?.includes("already exists")) {
+        setErrorMessage(
+          "An issue with this DIGIPIN and category already exists in the system. Please use a different DIGIPIN or category."
+        );
+      } else {
+        setErrorMessage(error.message || "Error submitting issue. Please try again.");
       }
-    }, 1500);
+      console.error('❌ Error submitting issue:', error);
+    }
   };
 
   const generateDescription = () => {
@@ -905,14 +897,18 @@ function AdminLoginPage({
   });
   const [error, setError] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
 
-    if (validateAdminLogin(formData.username, formData.password)) {
-      onLoginSuccess();
-    } else {
-      setError("Invalid username or password");
+    try {
+      const { adminLogin } = await import("./lib/apiClient");
+      const result = await adminLogin(formData.username, formData.password);
+      console.log('✅ Admin login successful:', result);
+      onLoginSuccess(result.token);
+    } catch (error: any) {
+      console.error('❌ Admin login failed:', error);
+      setError(error.message || "Invalid username or password");
     }
   };
 
@@ -1019,19 +1015,23 @@ function App() {
   const [showAdminLogin, setShowAdminLogin] = useState(false);
 
   useEffect(() => {
-    // Initialize data on app load
-    initializeData();
+    // App initialization - data comes from MongoDB via API
+    // No localStorage initialization needed
+    console.log('🚀 App initialized - ready to fetch data from API');
   }, []);
 
-  const handleAdminLoginSuccess = () => {
+  const handleAdminLoginSuccess = (token?: string) => {
+    // Token is stored in localStorage by apiClient
     setIsAdminLoggedIn(true);
     setShowAdminLogin(false);
     setCurrentPage("admin");
   };
 
   const handleAdminLogout = () => {
+    localStorage.removeItem('adminToken');
     setIsAdminLoggedIn(false);
     setCurrentPage("report");
+    console.log('👋 Admin logged out');
   };
 
   const renderPage = () => {

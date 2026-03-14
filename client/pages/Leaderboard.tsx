@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../components/ui/card";
 import { Badge } from "../components/ui/badge";
 import { Button } from "../components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../components/ui/tabs";
 import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
 import { Trophy, Medal, Award, Star, TrendingUp, Users, Calendar, Target } from "lucide-react";
+import { getLeaderboard } from "../lib/apiClient";
 
 interface LeaderboardUser {
   id: number;
