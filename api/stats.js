@@ -1,12 +1,12 @@
-import { getCollection } from './lib/db.js'
-import { sendResponse } from './lib/helpers.js'
+import { getCollection } from "./lib/db.js"
+import { sendResponse } from "./lib/helpers.js"
 
 export default async function handler(req, res) {
 try {
 
 ```
-if (req.method !== 'GET') {
-  return sendResponse(res, 405, null, 'Method not allowed')
+if (req.method !== "GET") {
+  return sendResponse(res, 405, null, "Method not allowed")
 }
 
 const usersCollection = await getCollection("users")
