@@ -23,7 +23,7 @@ return `POST-${Date.now().toString().slice(-6)}`
 
 export function getAdminCredentials() {
 return {
-username: process.env.ADMIN_USERNAME || 'admin',
-password: process.env.ADMIN_PASSWORD || 'admin123'
+username: process.env.ADMIN_USERNAME || "admin",
+password: process.env.ADMIN_PASSWORD || "admin123"
 }
 }
