@@ -3,11 +3,12 @@ import { MongoClient } from 'mongodb'
 let cachedClient = null
 let cachedDb = null
 
-const MONGODB_URI =
-process.env.MONGODB_URI ||
-'mongodb+srv://rsahusindurkar_db_user@fixmycity.khpualp.mongodb.net/?appName=FixMyCity'
-
+const MONGODB_URI = process.env.MONGODB_URI
 const DB_NAME = 'fixmycity'
+
+if (!MONGODB_URI) {
+throw new Error('Please define the MONGODB_URI environment variable')
+}
 
 export async function connectToDatabase() {
 if (cachedClient && cachedDb) {
