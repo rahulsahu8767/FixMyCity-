@@ -1,5 +1,5 @@
-import { getCollection } from './lib/db.ts';
-import { sendResponse } from './lib/helpers.ts';
+import { getCollection } from './lib/db.js';
+import { sendResponse } from './lib/helpers.js';
 
 export default async function handler(req: any, res: any) {
   try {
