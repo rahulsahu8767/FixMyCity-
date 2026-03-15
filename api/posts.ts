@@ -1,5 +1,5 @@
-import { getCollection } from './lib/db';
-import { sendResponse, validateEmail, generatePostId } from './lib/helpers';
+import { getCollection } from './lib/db.ts';
+import { sendResponse, validateEmail, generatePostId } from './lib/helpers.ts';
 import { ObjectId } from 'mongodb';
 
 export default async function handler(req: any, res: any) {
