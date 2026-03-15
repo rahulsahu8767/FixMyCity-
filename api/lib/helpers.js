@@ -5,7 +5,9 @@ data: error ? undefined : data,
 error: error || undefined
 }
 
-res.status(statusCode).json(response)
+res.statusCode = statusCode
+res.setHeader("Content-Type", "application/json")
+res.end(JSON.stringify(response))
 }
 
 export function validateEmail(email) {
